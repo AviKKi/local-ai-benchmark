@@ -1,0 +1,63 @@
+{"time": "2026-10-20T20:28:20.100231+00:00", "kind": "planned", "message": "gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:28:20.100733+00:00", "kind": "planned", "message": "qwen3:0.6b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.101158+00:00", "kind": "planned", "message": "gemma3:1b-it-q4_K_M"}
+{"time": "2026-10-20T20:28:20.101591+00:00", "kind": "planned", "message": "llama3.2:1b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:28:20.102118+00:00", "kind": "planned", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:28:20.102600+00:00", "kind": "planned", "message": "qwen3.5:0.8b-q8_0"}
+{"time": "2026-10-20T20:28:20.103124+00:00", "kind": "planned", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M"}
+{"time": "2026-10-20T20:28:20.103593+00:00", "kind": "planned", "message": "qwen3:1.7b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.104057+00:00", "kind": "planned", "message": "qwen3.5:2b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.104506+00:00", "kind": "planned", "message": "llama3.2:3b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:28:20.104908+00:00", "kind": "planned", "message": "granite4.2:3b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.105380+00:00", "kind": "planned", "message": "phi4-mini:3.8b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.105798+00:00", "kind": "planned", "message": "ministral-3:3b-instruct-2512-q4_K_M"}
+{"time": "2026-10-20T20:28:20.106270+00:00", "kind": "planned", "message": "qwen3.5:4b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.106675+00:00", "kind": "planned", "message": "gemma4:e2b-it-q4_K_M"}
+{"time": "2026-10-20T20:28:20.107373+00:00", "kind": "planned", "message": "qwen2.5-coder:7b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:28:20.107838+00:00", "kind": "planned", "message": "lfm2.5:8b-a1b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.108292+00:00", "kind": "planned", "message": "qwen3:8b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.108778+00:00", "kind": "planned", "message": "granite4.2:8b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.109244+00:00", "kind": "planned", "message": "ministral-3:8b-instruct-2512-q4_K_M"}
+{"time": "2026-10-20T20:28:20.109740+00:00", "kind": "planned", "message": "gemma4:e4b-it-q4_K_M"}
+{"time": "2026-10-20T20:28:20.110226+00:00", "kind": "planned", "message": "ornith-1.5:9b"}
+{"time": "2026-10-20T20:28:20.110766+00:00", "kind": "planned", "message": "qwen3.5:9b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.111246+00:00", "kind": "planned", "message": "gemma4:12b-it-q4_K_M"}
+{"time": "2026-10-20T20:28:20.111746+00:00", "kind": "planned", "message": "deepseek-r1:14b-qwen-distill-q4_K_M"}
+{"time": "2026-10-20T20:28:20.112299+00:00", "kind": "planned", "message": "ministral-3:14b"}
+{"time": "2026-10-20T20:28:20.112843+00:00", "kind": "planned", "message": "phi4:14b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.113338+00:00", "kind": "planned", "message": "qwen3:14b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.113849+00:00", "kind": "planned", "message": "gpt-oss:20b"}
+{"time": "2026-10-20T20:28:20.114460+00:00", "kind": "planned", "message": "devstral-small-2:24b-instruct-2512-q4_K_M"}
+{"time": "2026-10-20T20:28:20.115051+00:00", "kind": "planned", "message": "lfm2.5:24b-a2b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.115637+00:00", "kind": "planned", "message": "mistral-small3.2:24b"}
+{"time": "2026-10-20T20:28:20.116200+00:00", "kind": "planned", "message": "qwen3.5:27b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.116737+00:00", "kind": "planned", "message": "qwen3.6:27b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.117287+00:00", "kind": "planned", "message": "gemma4:26b-a4b-it-q4_K_M"}
+{"time": "2026-10-20T20:28:20.117872+00:00", "kind": "planned", "message": "granite4.2:30b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.118430+00:00", "kind": "planned", "message": "muse-glimmer:30b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.119008+00:00", "kind": "planned", "message": "qwen3.8:27b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.119568+00:00", "kind": "planned", "message": "glm-4.7-flash:q4_K_M"}
+{"time": "2026-10-20T20:28:20.120134+00:00", "kind": "planned", "message": "north-mini-code-1.0:q4_K_M"}
+{"time": "2026-10-20T20:28:20.120683+00:00", "kind": "planned", "message": "olmo-3.1:32b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:28:20.121250+00:00", "kind": "planned", "message": "olmo-3.1:32b-think-q4_K_M"}
+{"time": "2026-10-20T20:28:20.121795+00:00", "kind": "planned", "message": "qwen3-coder:30b-a3b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.122350+00:00", "kind": "planned", "message": "deepseek-r1:32b-qwen-distill-q4_K_M"}
+{"time": "2026-10-20T20:28:20.122899+00:00", "kind": "planned", "message": "gemma4:31b-it-q4_K_M"}
+{"time": "2026-10-20T20:28:20.123447+00:00", "kind": "planned", "message": "qwen3:32b"}
+{"time": "2026-10-20T20:28:20.124006+00:00", "kind": "planned", "message": "qwen3.5:35b-a3b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.124550+00:00", "kind": "planned", "message": "ornith-1.5:35b"}
+{"time": "2026-10-20T20:28:20.125125+00:00", "kind": "planned", "message": "qwen3.6:35b-a3b-q4_K_M"}
+{"time": "2026-10-20T20:28:20.125598+00:00", "kind": "skipped", "message": "nemotron-3.5-lightning:30b-a3b-q4_K_M: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.126109+00:00", "kind": "skipped", "message": "llama3.3:70b: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.126526+00:00", "kind": "skipped", "message": "qwen3-coder-next:q4_K_M: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.127100+00:00", "kind": "skipped", "message": "gpt-oss:120b: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.127568+00:00", "kind": "skipped", "message": "ornith-1.5:122b-q4_K_M: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.127964+00:00", "kind": "skipped", "message": "nemotron-3.5-super:120b-a12b-q4_K_M: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.128368+00:00", "kind": "skipped", "message": "laguna-s-2.1:q4_K_M: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.128768+00:00", "kind": "skipped", "message": "qwen3.8-flash-next:125b-a6b-q4_K_M: physical_memory_below_model_minimum"}
+{"time": "2026-10-20T20:28:20.129155+00:00", "kind": "skipped", "message": "bonsai-2:2b: disabled:New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling."}
+{"time": "2026-10-20T20:28:20.129539+00:00", "kind": "skipped", "message": "bonsai-2:4b: disabled:New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling."}
+{"time": "2026-10-20T20:28:20.129934+00:00", "kind": "skipped", "message": "bonsai-2:9b: disabled:New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling."}
+{"time": "2026-10-20T20:28:20.130323+00:00", "kind": "skipped", "message": "bonsai-2:27b: disabled:New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling."}
+{"time": "2026-10-20T20:28:20.130733+00:00", "kind": "skipped", "message": "laguna-xs-2.1:q4_K_M: disabled:Upstream reports an unresolved macOS issue; recheck the model page before enabling."}
+{"time": "2026-10-20T20:28:20.131122+00:00", "kind": "skipped", "message": "nemotron-3.5-bolt:74b-a9b-iq2: disabled:Published mixed IQ2_XXS/NVFP4 artifact does not support Apple Silicon / Metal."}

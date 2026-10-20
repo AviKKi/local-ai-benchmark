@@ -1,0 +1,59 @@
+{"time": "2026-10-20T20:47:44.309143+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen2.5-coder/manifests/1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:47:44.994400+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen2.5-coder/blobs/sha256:152cb442202b836b5415fe4397169982b74dc3bdbb06b9777a126e0161c740da"}
+{"time": "2026-10-20T20:47:45.970518+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:47:45.992799+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:47:46.007025+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:47:46.138058+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:47:46.152030+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:47:46.165023+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen2.5-coder:1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:47:51.274766+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:47:58.578583+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:48:06.774216+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:48:14.875868+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:48:23.074756+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:48:31.275473+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:48:39.775653+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:48:48.175200+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:48:56.475282+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:49:04.792383+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:49:13.076083+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:49:17.248229+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:49:17.313442+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:49:17.360330+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:49:17.377188+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:17.983029+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:18.009265+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:18.079936+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:18.098409+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:18.154010+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:18.168766+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:49:18.183997+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:18.197815+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m"}
+{"time": "2026-10-20T20:49:18.256589+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m"}
+{"time": "2026-10-20T20:49:18.284212+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:20.405188+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:20.421669+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:21.958901+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:21.975700+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:23.518003+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:23.534906+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:25.105450+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:25.122056+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:25.433648+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:25.450742+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:26.996347+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:27.013043+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:28.585717+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:28.602843+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:28.883944+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:28.901113+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:30.449149+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:30.466634+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:49:32.038620+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:32.052606+00:00", "kind": "completed", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:49:32.052712+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m"}
+{"time": "2026-10-20T20:49:32.063659+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m"}
+{"time": "2026-10-20T20:49:32.076608+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:49:32.088289+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:49:32.100635+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:49:32.110114+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm qwen2.5-coder:1.5b-instruct-q4_K_M"}

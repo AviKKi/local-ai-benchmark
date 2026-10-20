@@ -1,0 +1,103 @@
+{"time": "2026-10-20T20:29:30.992208+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/manifests/270m-it-q8_0"}
+{"time": "2026-10-20T20:29:31.689115+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:74156d92caf6d17ac05e9ad7b3eab0a2123f6bce4150f715ebd92e0c3af6cad1"}
+{"time": "2026-10-20T20:29:32.631767+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:29:34.236755+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:29:34.255385+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:29:34.394844+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:29:37.872761+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:29:37.887005+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:29:41.496692+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:29:43.196206+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:29:45.696523+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:29:48.095908+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:29:50.496631+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:29:53.196644+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:29:55.596397+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:29:58.196861+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:30:00.597672+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:30:03.097144+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:30:05.598020+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:30:09.645805+00:00", "kind": "skipped", "message": "gemma3:270m-it-q8_0: Downloaded manifest digest differs from the admitted registry manifest"}
+{"time": "2026-10-20T20:30:09.653831+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3/manifests/0.6b-q4_K_M"}
+{"time": "2026-10-20T20:30:10.464557+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3/blobs/sha256:b0830f4ff6a0220cfd995455206353b0ed23c0aee865218b154b7a75087b4e55"}
+{"time": "2026-10-20T20:30:11.399194+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:30:11.421978+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:30:11.435125+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:30:11.565828+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:30:11.580054+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:30:11.593237+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen3:0.6b-q4_K_M"}
+{"time": "2026-10-20T20:30:15.202245+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:30:18.803504+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:30:23.102718+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:30:27.502727+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:30:31.802886+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:30:36.203320+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:30:40.503911+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:30:44.902930+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:30:49.203970+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:30:53.502911+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:30:57.802979+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:31:02.074065+00:00", "kind": "skipped", "message": "qwen3:0.6b-q4_K_M: Downloaded manifest digest differs from the admitted registry manifest"}
+{"time": "2026-10-20T20:31:02.082367+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/manifests/1b-it-q4_K_M"}
+{"time": "2026-10-20T20:31:02.743991+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:76a6b777faea7a8fda1d339bfc81ea919ed429c64ed0d7c1b0617bc14afc76b6"}
+{"time": "2026-10-20T20:31:03.662317+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:31:03.683028+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:31:03.696590+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:31:03.827587+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:31:03.841475+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:31:03.854668+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull gemma3:1b-it-q4_K_M"}
+{"time": "2026-10-20T20:31:07.364652+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:31:13.165321+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:31:19.865395+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:31:26.564049+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:31:33.165102+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:31:39.963850+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:31:46.664433+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:31:53.265205+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:32:00.064542+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:32:06.764554+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:32:13.864133+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:32:18.218309+00:00", "kind": "skipped", "message": "gemma3:1b-it-q4_K_M: Downloaded manifest digest differs from the admitted registry manifest"}
+{"time": "2026-10-20T20:32:18.227145+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/llama3.2/manifests/1b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:32:19.041865+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/llama3.2/blobs/sha256:bbb3b1633f7e058144147ef85ac5ab828280d5dbb970a3d852d3805e8d8b558a"}
+{"time": "2026-10-20T20:32:20.229296+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:32:20.265322+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:32:20.283333+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:32:20.416010+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:32:20.429700+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:32:20.443065+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull llama3.2:1b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:32:24.251890+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:32:30.152105+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:32:37.052094+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:32:43.851909+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:32:50.652698+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:32:57.369653+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:33:03.952194+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:33:10.653562+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:33:17.352339+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:33:24.072692+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:33:30.752336+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:33:35.208239+00:00", "kind": "skipped", "message": "llama3.2:1b-instruct-q4_K_M: Downloaded manifest digest differs from the admitted registry manifest"}
+{"time": "2026-10-20T20:33:35.219209+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen2.5-coder/manifests/1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:33:35.942350+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen2.5-coder/blobs/sha256:152cb442202b836b5415fe4397169982b74dc3bdbb06b9777a126e0161c740da"}
+{"time": "2026-10-20T20:33:36.926800+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:33:36.947555+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:33:36.961214+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:33:37.091495+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:33:37.105525+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:33:37.118384+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen2.5-coder:1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:33:40.628972+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:33:47.928297+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:33:56.128661+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:34:04.227941+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:34:12.427681+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:34:20.647199+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:34:28.829388+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:34:37.029025+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:34:45.227754+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:34:53.429876+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:35:02.828555+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:35:07.303511+00:00", "kind": "skipped", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M: Downloaded manifest digest differs from the admitted registry manifest"}
+{"time": "2026-10-20T20:35:07.312942+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3.5/manifests/0.8b-q8_0"}
+{"time": "2026-10-20T20:35:08.121829+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3.5/blobs/sha256:6ca237406b16208ee9701509641d2eb24779a73fa5e0b2b6fbc379284474488f"}
+{"time": "2026-10-20T20:35:08.655360+00:00", "kind": "interrupted", "message": "User interrupt"}

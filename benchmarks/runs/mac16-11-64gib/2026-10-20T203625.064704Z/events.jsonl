@@ -1,0 +1,61 @@
+{"time": "2026-10-20T20:36:25.073866+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/manifests/270m-it-q8_0"}
+{"time": "2026-10-20T20:36:25.759874+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:74156d92caf6d17ac05e9ad7b3eab0a2123f6bce4150f715ebd92e0c3af6cad1"}
+{"time": "2026-10-20T20:36:26.799412+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:36:26.822916+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:36:26.837344+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:36:26.968323+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:36:26.982335+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:36:26.995228+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:36:30.506279+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:36:32.204824+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:36:34.605814+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:36:37.105161+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:36:39.506295+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:36:41.906167+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:36:44.306178+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:36:46.823088+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:36:49.205969+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:36:51.705217+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:36:55.005479+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:36:57.706310+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:36:58.906097+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:36:59.015262+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:36:59.080351+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:36:59.125112+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:36:59.139957+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:00.049629+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:00.065822+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:00.244323+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:00.260127+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:00.293432+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:00.308357+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:37:00.323870+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:00.337946+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:37:00.404392+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:37:00.430734+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:01.078607+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:01.093910+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:01.158418+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:01.174800+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:01.234583+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:01.250566+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:01.915957+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:01.938551+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:02.066363+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:02.082788+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:02.143190+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:02.159275+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:02.825022+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:02.848582+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:02.990975+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:03.009398+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:03.074592+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:03.090567+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:37:03.684491+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:03.697739+00:00", "kind": "completed", "message": "gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:37:03.697824+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:37:03.708460+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:37:03.721060+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:37:03.731775+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:37:03.743388+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:37:03.752137+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm gemma3:270m-it-q8_0"}

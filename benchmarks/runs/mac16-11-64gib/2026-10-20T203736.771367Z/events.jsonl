@@ -1,0 +1,264 @@
+{"time": "2026-10-20T20:37:36.780819+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/manifests/270m-it-q8_0"}
+{"time": "2026-10-20T20:37:37.478137+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:74156d92caf6d17ac05e9ad7b3eab0a2123f6bce4150f715ebd92e0c3af6cad1"}
+{"time": "2026-10-20T20:37:38.430672+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:37:38.451239+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:37:38.464402+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:37:38.596596+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:37:38.610108+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:37:38.623077+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:37:42.332331+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:37:44.032459+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:37:46.444836+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:37:48.932287+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:37:51.332550+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:37:53.731970+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:37:56.132237+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:37:58.532463+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:38:00.932263+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:38:03.434057+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:38:05.933890+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:38:09.894554+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:38:09.959267+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:38:10.004147+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:38:10.019054+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:10.587820+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:10.612286+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:10.647925+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:10.663481+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:10.699746+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:10.714159+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:38:10.729048+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:10.742941+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:38:10.808287+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:38:10.834632+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:11.452822+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:11.471179+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:11.544864+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:11.560754+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:11.627752+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:11.643647+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:12.243198+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:12.259476+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:12.385494+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:12.401853+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:12.463367+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:12.479479+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:13.158022+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:13.180500+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:13.315755+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:13.332939+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:13.392502+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:13.408676+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:38:14.093432+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:14.112429+00:00", "kind": "completed", "message": "gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:38:14.112548+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:38:14.125642+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm local-bench-gemma3-270m-it-q8-0"}
+{"time": "2026-10-20T20:38:14.139332+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:38:14.151033+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm local-bench-gemma3-270m-it-q8-0-probe"}
+{"time": "2026-10-20T20:38:14.163040+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:38:14.172290+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama rm gemma3:270m-it-q8_0"}
+{"time": "2026-10-20T20:38:14.203995+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3/manifests/0.6b-q4_K_M"}
+{"time": "2026-10-20T20:38:14.917722+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3/blobs/sha256:b0830f4ff6a0220cfd995455206353b0ed23c0aee865218b154b7a75087b4e55"}
+{"time": "2026-10-20T20:38:15.945280+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:38:15.987150+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:38:16.003852+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:38:16.135506+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:38:16.149427+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:38:16.162581+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen3:0.6b-q4_K_M"}
+{"time": "2026-10-20T20:38:19.671947+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:38:23.271846+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:38:27.572365+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:38:31.871890+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:38:36.291859+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:38:40.573675+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:38:44.990553+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:38:49.273289+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:38:53.972019+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:38:58.572501+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:39:02.873661+00:00", "kind": "download", "message": "qwen3:0.6b-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:39:07.881294+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-qwen3-0-6b-q4-k-m-probe"}
+{"time": "2026-10-20T20:39:07.939743+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen3-0-6b-q4-k-m-probe"}
+{"time": "2026-10-20T20:39:07.985217+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen3-0-6b-q4-k-m-probe"}
+{"time": "2026-10-20T20:39:08.000489+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:39:08.700451+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:39:08.716717+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:39:08.750343+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:39:08.766172+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:39:08.800589+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:39:08.814791+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-qwen3-0-6b-q4-k-m-probe"}
+{"time": "2026-10-20T20:39:08.830175+00:00", "kind": "failed", "message": "qwen3:0.6b-q4_K_M: CPU telemetry unavailable for owned process"}
+{"time": "2026-10-20T20:39:08.836040+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/manifests/1b-it-q4_K_M"}
+{"time": "2026-10-20T20:39:09.508185+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:76a6b777faea7a8fda1d339bfc81ea919ed429c64ed0d7c1b0617bc14afc76b6"}
+{"time": "2026-10-20T20:39:10.375589+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:39:10.389895+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:39:10.400553+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:39:10.531364+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:39:10.546622+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:39:10.561369+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull gemma3:1b-it-q4_K_M"}
+{"time": "2026-10-20T20:39:13.972226+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:39:19.889651+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:39:26.572520+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:39:33.389558+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:39:39.971340+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:39:46.671308+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:39:53.272730+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:40:00.071475+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:40:06.771772+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:40:13.371479+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:40:21.373509+00:00", "kind": "download", "message": "gemma3:1b-it-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:40:25.798071+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-gemma3-1b-it-q4-k-m-probe"}
+{"time": "2026-10-20T20:40:25.862769+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-1b-it-q4-k-m-probe"}
+{"time": "2026-10-20T20:40:25.904223+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-gemma3-1b-it-q4-k-m-probe"}
+{"time": "2026-10-20T20:40:25.918505+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:40:26.634069+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:40:26.649896+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:40:26.737653+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:40:26.753441+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:40:26.800384+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:40:26.815338+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-gemma3-1b-it-q4-k-m-probe"}
+{"time": "2026-10-20T20:40:26.830184+00:00", "kind": "failed", "message": "gemma3:1b-it-q4_K_M: CPU telemetry unavailable for owned process"}
+{"time": "2026-10-20T20:40:26.835888+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/llama3.2/manifests/1b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:40:27.568943+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/llama3.2/blobs/sha256:bbb3b1633f7e058144147ef85ac5ab828280d5dbb970a3d852d3805e8d8b558a"}
+{"time": "2026-10-20T20:40:28.687646+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:40:28.708775+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:40:28.722587+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:40:28.853692+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:40:28.867304+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:40:28.880531+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull llama3.2:1b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:40:33.389219+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:40:39.189425+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:40:45.989231+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:40:52.690802+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:40:59.391270+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:41:06.089555+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:41:12.891561+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:41:19.489665+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:41:26.189731+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:41:32.789695+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:41:39.791473+00:00", "kind": "download", "message": "llama3.2:1b-instruct-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:41:44.010885+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-llama3-2-1b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:41:44.090395+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-llama3-2-1b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:41:44.143180+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-llama3-2-1b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:41:44.158344+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:41:44.778735+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:41:44.794717+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:41:44.837398+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:41:44.853026+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:41:44.896042+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:41:44.910912+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-llama3-2-1b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:41:44.925564+00:00", "kind": "failed", "message": "llama3.2:1b-instruct-q4_K_M: CPU telemetry unavailable for owned process"}
+{"time": "2026-10-20T20:41:44.931288+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen2.5-coder/manifests/1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:41:45.667385+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen2.5-coder/blobs/sha256:152cb442202b836b5415fe4397169982b74dc3bdbb06b9777a126e0161c740da"}
+{"time": "2026-10-20T20:41:46.610162+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:41:46.631493+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:41:46.645091+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:41:46.777618+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:41:46.791484+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:41:46.804556+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen2.5-coder:1.5b-instruct-q4_K_M"}
+{"time": "2026-10-20T20:41:50.431020+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:41:57.614829+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:42:05.914063+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:42:14.314476+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:42:22.514167+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:42:30.714543+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:42:38.915417+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:42:47.115723+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:42:55.214115+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:43:03.514803+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:43:11.717790+00:00", "kind": "download", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:43:16.152409+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:43:16.211200+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:43:16.255570+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:43:16.269941+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:43:16.931234+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:43:16.947980+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:43:17.067372+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:43:17.083117+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:43:17.137952+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:43:17.152985+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-qwen2-5-coder-1-5b-instruct-q4-k-m-probe"}
+{"time": "2026-10-20T20:43:17.168431+00:00", "kind": "failed", "message": "qwen2.5-coder:1.5b-instruct-q4_K_M: CPU telemetry unavailable for owned process"}
+{"time": "2026-10-20T20:43:17.174315+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3.5/manifests/0.8b-q8_0"}
+{"time": "2026-10-20T20:43:17.938935+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3.5/blobs/sha256:6ca237406b16208ee9701509641d2eb24779a73fa5e0b2b6fbc379284474488f"}
+{"time": "2026-10-20T20:43:19.064543+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:43:19.104672+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:43:19.120931+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:43:19.252768+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:43:19.266972+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:43:19.279984+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen3.5:0.8b-q8_0"}
+{"time": "2026-10-20T20:43:25.389005+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:43:26.489186+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:43:28.189718+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:43:29.990817+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:43:31.590560+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:43:33.390835+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:43:35.090850+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:43:36.889480+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:43:38.490841+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:43:40.289569+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:43:42.290562+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:43:43.490183+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:43:49.388850+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:43:56.088832+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:44:02.890753+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:44:09.988975+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:44:16.890207+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:44:23.890135+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:44:30.791072+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:44:37.608569+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:44:44.389429+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:44:51.289897+00:00", "kind": "download", "message": "qwen3.5:0.8b-q8_0 \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:44:55.783518+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-qwen3-5-0-8b-q8-0-probe"}
+{"time": "2026-10-20T20:44:55.877845+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen3-5-0-8b-q8-0-probe"}
+{"time": "2026-10-20T20:44:55.949896+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-qwen3-5-0-8b-q8-0-probe"}
+{"time": "2026-10-20T20:44:55.967224+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:44:56.813672+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:44:56.829809+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:44:56.997714+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:44:57.014114+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:44:57.173491+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:44:57.189016+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-qwen3-5-0-8b-q8-0-probe"}
+{"time": "2026-10-20T20:44:57.205281+00:00", "kind": "failed", "message": "qwen3.5:0.8b-q8_0: CPU telemetry unavailable for owned process"}
+{"time": "2026-10-20T20:44:57.211583+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/deepseek-r1/manifests/1.5b-qwen-distill-q4_K_M"}
+{"time": "2026-10-20T20:44:58.727019+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/deepseek-r1/blobs/sha256:a85fe2a2e58e2426116d3686dfdc1a6ea58640c1e684069976aa730be6c1fa01"}
+{"time": "2026-10-20T20:44:59.693961+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:44:59.715156+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:44:59.729093+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:44:59.855240+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:44:59.869869+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:44:59.882845+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull deepseek-r1:1.5b-qwen-distill-q4_K_M"}
+{"time": "2026-10-20T20:45:03.297878+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:45:11.892127+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:45:21.491879+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:45:30.792133+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:45:40.092339+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:45:49.392775+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 50%"}
+{"time": "2026-10-20T20:45:58.693781+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 60%"}
+{"time": "2026-10-20T20:46:07.892605+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 70%"}
+{"time": "2026-10-20T20:46:17.192000+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 80%"}
+{"time": "2026-10-20T20:46:26.392871+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 90%"}
+{"time": "2026-10-20T20:46:36.192100+00:00", "kind": "download", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M \u00b7 current layer 100%"}
+{"time": "2026-10-20T20:46:40.702744+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama create local-bench-deepseek-r1-1-5b-qwen-distill-q4-k-m-probe"}
+{"time": "2026-10-20T20:46:40.762950+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-deepseek-r1-1-5b-qwen-distill-q4-k-m-probe"}
+{"time": "2026-10-20T20:46:40.814295+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show local-bench-deepseek-r1-1-5b-qwen-distill-q4-k-m-probe"}
+{"time": "2026-10-20T20:46:40.830379+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:46:41.529433+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:46:41.545285+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:46:41.600868+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:46:41.617289+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --verbose"}
+{"time": "2026-10-20T20:46:41.673103+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama ps"}
+{"time": "2026-10-20T20:46:41.688509+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama stop local-bench-deepseek-r1-1-5b-qwen-distill-q4-k-m-probe"}
+{"time": "2026-10-20T20:46:41.704119+00:00", "kind": "failed", "message": "deepseek-r1:1.5b-qwen-distill-q4_K_M: CPU telemetry unavailable for owned process"}
+{"time": "2026-10-20T20:46:41.709949+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3/manifests/1.7b-q4_K_M"}
+{"time": "2026-10-20T20:46:42.502725+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/qwen3/blobs/sha256:517ccaff02fe9f99718ab2f478e611aa2813c36263eeed86c2427bc122d14ad8"}
+{"time": "2026-10-20T20:46:43.441068+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-20T20:46:43.463960+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-20T20:46:43.478308+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-20T20:46:43.600361+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-20T20:46:43.614019+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-20T20:46:43.626960+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull qwen3:1.7b-q4_K_M"}
+{"time": "2026-10-20T20:46:47.937952+00:00", "kind": "download", "message": "qwen3:1.7b-q4_K_M \u00b7 current layer 0%"}
+{"time": "2026-10-20T20:46:58.135803+00:00", "kind": "download", "message": "qwen3:1.7b-q4_K_M \u00b7 current layer 10%"}
+{"time": "2026-10-20T20:47:09.436586+00:00", "kind": "download", "message": "qwen3:1.7b-q4_K_M \u00b7 current layer 20%"}
+{"time": "2026-10-20T20:47:20.636853+00:00", "kind": "download", "message": "qwen3:1.7b-q4_K_M \u00b7 current layer 30%"}
+{"time": "2026-10-20T20:47:31.937101+00:00", "kind": "download", "message": "qwen3:1.7b-q4_K_M \u00b7 current layer 40%"}
+{"time": "2026-10-20T20:47:42.099717+00:00", "kind": "interrupted", "message": "User interrupt"}

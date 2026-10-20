@@ -1,0 +1,361 @@
+{
+  "run_id": "2026-10-20T203625.064704Z",
+  "device_id": "mac16-11-64gib",
+  "started_at": "2026-10-20T20:36:25.065764+00:00",
+  "status": "completed",
+  "plan_only": false,
+  "catalog_schema_version": "1.0.0",
+  "catalog_as_of": "2026-10-21",
+  "system_specs": {
+    "os": "Darwin",
+    "os_version": "26.5.1",
+    "architecture": "arm64",
+    "model": "Mac16,11",
+    "chip": "Apple M4 Pro",
+    "logical_cpu_count": 14,
+    "physical_cpu_count": 14,
+    "memory": {
+      "physical": 68719476736,
+      "available": 61187375104,
+      "pressure": "normal",
+      "swap_used": 0,
+      "metal_recommended": null
+    },
+    "page_size_bytes": 16384,
+    "metal_recommended_working_set_bytes": null,
+    "metal_working_set_note": "Not exposed by this telemetry provider; the optional catalog limit is not applied."
+  },
+  "ollama_version": "ollama version is 0.40.6",
+  "models": [
+    {
+      "model_id": "gemma3-270m-it-q8-0",
+      "ollama_tag": "gemma3:270m-it-q8_0",
+      "status": "completed",
+      "catalog_schema_version": "1.0.0",
+      "catalog_as_of": "2026-10-21",
+      "resolved_manifest_sha256": "e7d36fb2c3b3293cfe56d55889867a064b3a2b22e98335f2e6e8a387e081d6be",
+      "actual_quantization": "Q8_0",
+      "actual_context_length": 2048,
+      "actual_backend": "metal (ollama ps: 100% GPU)",
+      "thinking_mode": "model_default (no CLI override; effective reasoning effort is not exposed by the CLI)",
+      "memory_budget_bytes": 2684354560,
+      "skip_or_failure_reason": null,
+      "probes": [
+        {
+          "prompt_id": "coding",
+          "metrics": {
+            "generated_tokens": 1,
+            "prompt_tokens": 20,
+            "cached_prompt_tokens": null,
+            "generation_seconds": 1e-06,
+            "prompt_eval_seconds": 0.11431100000000001,
+            "generation_tokens_per_second": 1000000.0,
+            "prompt_eval_tokens_per_second": 174.9612898146285,
+            "wall_time_seconds": 0.9049031670001568,
+            "end_to_end_tokens_per_second": 1.1050906179443472,
+            "model_load_seconds": 0.77283075,
+            "missing_metric_reasons": {
+              "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+            }
+          }
+        },
+        {
+          "prompt_id": "sql",
+          "metrics": {
+            "generated_tokens": 1,
+            "prompt_tokens": 46,
+            "cached_prompt_tokens": null,
+            "generation_seconds": 1e-06,
+            "prompt_eval_seconds": 0.16048300000000001,
+            "generation_tokens_per_second": 1000000.0,
+            "prompt_eval_tokens_per_second": 286.6347214346691,
+            "wall_time_seconds": 0.17386441700000432,
+            "end_to_end_tokens_per_second": 5.751608162583234,
+            "model_load_seconds": 0.000417458,
+            "missing_metric_reasons": {
+              "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+            }
+          }
+        },
+        {
+          "prompt_id": "ner",
+          "metrics": {
+            "generated_tokens": 1,
+            "prompt_tokens": 41,
+            "cached_prompt_tokens": null,
+            "generation_seconds": 1e-06,
+            "prompt_eval_seconds": 0.015401999999999999,
+            "generation_tokens_per_second": 1000000.0,
+            "prompt_eval_tokens_per_second": 2661.99194909752,
+            "wall_time_seconds": 0.02868175000003248,
+            "end_to_end_tokens_per_second": 34.865376066623114,
+            "model_load_seconds": 0.000377208,
+            "missing_metric_reasons": {
+              "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+            }
+          }
+        }
+      ],
+      "warmups": [
+        {
+          "prompt_id": "coding",
+          "metrics": {
+            "generated_tokens": 13,
+            "prompt_tokens": 20,
+            "cached_prompt_tokens": null,
+            "generation_seconds": 0.093084,
+            "prompt_eval_seconds": 0.016931,
+            "generation_tokens_per_second": 139.65880280177043,
+            "prompt_eval_tokens_per_second": 1181.2651349595415,
+            "wall_time_seconds": 0.6432146249990183,
+            "end_to_end_tokens_per_second": 20.210983231327866,
+            "model_load_seconds": 0.5183386249999999,
+            "missing_metric_reasons": {
+              "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+            }
+          }
+        }
+      ],
+      "profiles": [
+        {
+          "id": "single",
+          "benchmark_profile": "single",
+          "concurrency": 1,
+          "requests": [
+            {
+              "prompt_id": "coding",
+              "category": "coding",
+              "metrics": {
+                "generated_tokens": 13,
+                "prompt_tokens": 20,
+                "cached_prompt_tokens": 15,
+                "generation_seconds": 0.039432,
+                "prompt_eval_seconds": 0.0073230000000000005,
+                "generation_tokens_per_second": 329.6814769730168,
+                "prompt_eval_tokens_per_second": 682.7802813054758,
+                "wall_time_seconds": 0.05932845800089126,
+                "end_to_end_tokens_per_second": 219.1191282909242,
+                "model_load_seconds": 0.000369541,
+                "missing_metric_reasons": {}
+              }
+            }
+          ],
+          "metrics": {
+            "requests": 1,
+            "valid_generation_measurements": 1,
+            "generated_tokens": 13,
+            "generation_tokens_per_second": 329.6814769730168,
+            "wall_time_seconds": 0.05932845800089126,
+            "end_to_end_tokens_per_second": 219.1191282909242,
+            "aggregation": "sum of valid generated tokens / sum of their generation durations; warmup and probes excluded"
+          }
+        },
+        {
+          "id": "batch_sequential",
+          "benchmark_profile": "batch_sequential",
+          "concurrency": 1,
+          "requests": [
+            {
+              "prompt_id": "coding",
+              "category": "coding",
+              "metrics": {
+                "generated_tokens": 13,
+                "prompt_tokens": 20,
+                "cached_prompt_tokens": 15,
+                "generation_seconds": 0.034829,
+                "prompt_eval_seconds": 0.0064210000000000005,
+                "generation_tokens_per_second": 373.2521749117115,
+                "prompt_eval_tokens_per_second": 778.694907335306,
+                "wall_time_seconds": 0.054809208000733634,
+                "end_to_end_tokens_per_second": 237.18642312485144,
+                "model_load_seconds": 0.000417208,
+                "missing_metric_reasons": {}
+              }
+            },
+            {
+              "prompt_id": "sql",
+              "category": "sql",
+              "metrics": {
+                "generated_tokens": 206,
+                "prompt_tokens": 46,
+                "cached_prompt_tokens": null,
+                "generation_seconds": 0.630519,
+                "prompt_eval_seconds": 0.01062,
+                "generation_tokens_per_second": 326.71497607526493,
+                "prompt_eval_tokens_per_second": 4331.450094161959,
+                "wall_time_seconds": 0.656258875000276,
+                "end_to_end_tokens_per_second": 313.9005167738316,
+                "model_load_seconds": 0.000377458,
+                "missing_metric_reasons": {
+                  "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+                }
+              }
+            },
+            {
+              "prompt_id": "ner",
+              "category": "ner",
+              "metrics": {
+                "generated_tokens": 35,
+                "prompt_tokens": 41,
+                "cached_prompt_tokens": null,
+                "generation_seconds": 0.097973,
+                "prompt_eval_seconds": 0.010494999999999999,
+                "generation_tokens_per_second": 357.24128076102596,
+                "prompt_eval_tokens_per_second": 3906.6222010481183,
+                "wall_time_seconds": 0.12301483299961546,
+                "end_to_end_tokens_per_second": 284.5185344446178,
+                "model_load_seconds": 0.000375041,
+                "missing_metric_reasons": {
+                  "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+                }
+              }
+            },
+            {
+              "prompt_id": "coding",
+              "category": "coding",
+              "metrics": {
+                "generated_tokens": 13,
+                "prompt_tokens": 20,
+                "cached_prompt_tokens": 15,
+                "generation_seconds": 0.036286,
+                "prompt_eval_seconds": 0.006552,
+                "generation_tokens_per_second": 358.26489555200357,
+                "prompt_eval_tokens_per_second": 763.1257631257631,
+                "wall_time_seconds": 0.055337458001304185,
+                "end_to_end_tokens_per_second": 234.92224741681517,
+                "model_load_seconds": 0.00039970800000000003,
+                "missing_metric_reasons": {}
+              }
+            },
+            {
+              "prompt_id": "sql",
+              "category": "sql",
+              "metrics": {
+                "generated_tokens": 206,
+                "prompt_tokens": 46,
+                "cached_prompt_tokens": null,
+                "generation_seconds": 0.630274,
+                "prompt_eval_seconds": 0.01119,
+                "generation_tokens_per_second": 326.8419766641175,
+                "prompt_eval_tokens_per_second": 4110.813226094728,
+                "wall_time_seconds": 0.6561681250004767,
+                "end_to_end_tokens_per_second": 313.94393014724744,
+                "model_load_seconds": 0.000388541,
+                "missing_metric_reasons": {
+                  "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+                }
+              }
+            },
+            {
+              "prompt_id": "ner",
+              "category": "ner",
+              "metrics": {
+                "generated_tokens": 35,
+                "prompt_tokens": 41,
+                "cached_prompt_tokens": 36,
+                "generation_seconds": 0.113446,
+                "prompt_eval_seconds": 0.007705,
+                "generation_tokens_per_second": 308.51682738924245,
+                "prompt_eval_tokens_per_second": 648.9292667099286,
+                "wall_time_seconds": 0.13600216700069723,
+                "end_to_end_tokens_per_second": 257.34884062413926,
+                "model_load_seconds": 0.00039837499999999997,
+                "missing_metric_reasons": {}
+              }
+            },
+            {
+              "prompt_id": "coding",
+              "category": "coding",
+              "metrics": {
+                "generated_tokens": 13,
+                "prompt_tokens": 20,
+                "cached_prompt_tokens": 15,
+                "generation_seconds": 0.039633,
+                "prompt_eval_seconds": 0.007548,
+                "generation_tokens_per_second": 328.00948704362526,
+                "prompt_eval_tokens_per_second": 662.4271330153683,
+                "wall_time_seconds": 0.060073082999224425,
+                "end_to_end_tokens_per_second": 216.40307690164389,
+                "model_load_seconds": 0.000397375,
+                "missing_metric_reasons": {}
+              }
+            },
+            {
+              "prompt_id": "sql",
+              "category": "sql",
+              "metrics": {
+                "generated_tokens": 206,
+                "prompt_tokens": 46,
+                "cached_prompt_tokens": null,
+                "generation_seconds": 0.564727,
+                "prompt_eval_seconds": 0.011441000000000002,
+                "generation_tokens_per_second": 364.77802548842186,
+                "prompt_eval_tokens_per_second": 4020.627567520321,
+                "wall_time_seconds": 0.5894230829999287,
+                "end_to_end_tokens_per_second": 349.49428677197716,
+                "model_load_seconds": 0.00034591699999999995,
+                "missing_metric_reasons": {
+                  "cached_prompt_tokens": "CLI did not report a usable value (missing, unsupported, or zero duration)"
+                }
+              }
+            }
+          ],
+          "metrics": {
+            "requests": 8,
+            "valid_generation_measurements": 8,
+            "generated_tokens": 727,
+            "generation_tokens_per_second": 338.50370188952115,
+            "wall_time_seconds": 2.3310868320022564,
+            "end_to_end_tokens_per_second": 311.8716943613606,
+            "aggregation": "sum of valid generated tokens / sum of their generation durations; warmup and probes excluded"
+          }
+        }
+      ],
+      "metrics": {
+        "peak_runner_and_server_memory_bytes": 248482168,
+        "peak_system_available_drop_bytes": 916684800,
+        "minimum_available_memory_bytes": 60270690304,
+        "system_memory_pressure": "normal",
+        "swap_growth_bytes": 0,
+        "peak_cpu_percent_one_core_is_100": 521.1047591206981,
+        "gpu_usage_percent": null,
+        "gpu_usage_missing_reason": "GPU utilization requires privileged/platform-specific telemetry; not collected",
+        "memory_method": "sum of owned processes' macOS physical footprints; guard also checks system available-memory drop without adding the two"
+      },
+      "download_payload_bytes": 291554930,
+      "ollama_version": "ollama version is 0.40.6"
+    }
+  ],
+  "benchmark_options": {
+    "num_ctx": 2048,
+    "num_predict": 256,
+    "num_batch": 128,
+    "temperature": 0,
+    "seed": 42
+  },
+  "prompts": [
+    {
+      "id": "coding",
+      "category": "coding",
+      "text": "Write Python merge sort with a short explanation and example."
+    },
+    {
+      "id": "sql",
+      "category": "sql",
+      "text": "SQL: orders(id,customer_id,total,created_at). Return each customer's top 3 orders by total, breaking ties by id. Explain the query."
+    },
+    {
+      "id": "ner",
+      "category": "ner",
+      "text": "Extract PERSON, ORG, LOCATION as JSON: Maya Chen joined Acme in London. Ravi Shah visited Paris for a meeting with Globex. Explain each entity."
+    }
+  ],
+  "notes": [
+    "No output quality evaluation; generation text is not retained.",
+    "Native model templates and default thinking behavior are retained.",
+    "One-token prompt probes run under the 2048-token context bound before measurement.",
+    "Prompt caches may remain warm between fresh-conversation CLI invocations."
+  ],
+  "updated_at": "2026-10-20T20:37:03.780124+00:00",
+  "finished_at": "2026-10-20T20:37:03.780121+00:00"
+}
