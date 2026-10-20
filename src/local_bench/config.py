@@ -62,9 +62,11 @@ def validate_catalog(catalog):
     positive(policy["disk"]["reserve_volume_fraction"], "disk reserve fraction", 1)
     if policy["memory"]["estimate_multiplier"] < 1:
         raise BenchmarkError("Memory multiplier cannot be below one")
-    for name in ("max_concurrent_downloads", "max_loaded_models", "max_parallel_requests"):
+    if type(policy["execution"]["max_concurrent_downloads"]) is not int or policy["execution"]["max_concurrent_downloads"] not in (1, 2):
+        raise BenchmarkError("Only one or two concurrent downloads are supported")
+    for name in ("max_loaded_models", "max_parallel_requests"):
         if policy["execution"][name] != 1:
-            raise BenchmarkError("Concurrent models/downloads/requests are unsupported")
+            raise BenchmarkError("Concurrent loaded models/requests are unsupported")
     if policy["execution"]["max_retries_per_model"] != 0:
         raise BenchmarkError("Automatic model retries are unsupported")
     options = catalog["benchmark"]["options"]

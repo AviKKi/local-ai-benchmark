@@ -25,6 +25,22 @@ uv run local-ai-benchmark --models-file models.json --work-dir /Volumes/Bench/.b
 
 Quote glob patterns so the shell does not expand them. `--limit` caps statically eligible attempts, including attempts later rejected by registry or backend checks. Disabled, incompatible and capacity-rejected models have explicit skip reasons. The Rich terminal dashboard shows model counts, the current stage, download layer progress, available memory, owned process footprint, throughput and recent events. Non-interactive terminals automatically use plain logs.
 
+### Download Scheduling
+
+The catalog now defaults to **two concurrent downloads**, never more than two queued models. Both pulls finish before any inference begins. The runner then benchmarks the pair serially with one loaded model and no background transfers during measurements. This is a network optimization, not Phase 2 concurrent inference or download/compute overlap.
+
+```sh
+uv run local-ai-benchmark --resume
+uv run local-ai-benchmark --resume --download-workers 1
+uv run local-ai-benchmark --resume --download-workers 2
+```
+
+Two user-run partial-transfer sweeps measured single-download throughput of 9.868/9.486 MB/s and two-download aggregate throughput of 11.390/10.965 MB/s, about 15–16% higher. Four/six downloads gave only modest additional bandwidth; two stayed within 5% of peak in both sweeps. This selects a conservative default, not a claim that full model downloads or every network will see the same gain. The separate shell experiment remains available to retest on another system/network.
+
+Only statically eligible, non-reused models within `--limit` enter the pair queue. Combined disk admission reserves all queued weights plus staging; insufficient pair capacity causes automatic serial fallback. Each artifact retains independent manifest/blob verification, skip/failure handling and load-time admission checks. Partial pair failures still allow a verified partner to benchmark. Failure during inference clears the cache and safely re-downloads a later partner if needed.
+
+Reports record the requested download worker count, strategy, batch membership, batch resource peaks/elapsed preparation time and actual download concurrency per model. Batch preparation time includes metadata/startup, not just network transfer. Inference resource metrics have a separate baseline after downloads complete. `--download-workers 1` retains the original serial lifecycle; `--plan` remains local-only and never launches concurrent work.
+
 ### Resume or Fresh
 
 With no arguments, the runner offers resume or fresh if compatible history exists and stdin is a terminal. Enter accepts resume. With no compatible history it starts fresh. If history exists but stdin is not interactive, pass an explicit mode rather than relying on a prompt:
@@ -65,6 +81,7 @@ The runner requires Python 3.11 or later. `uv sync` installs the package, its CL
 | --- | --- |
 | `src/local_bench/cli.py` | Selection, exclusive run lock, orchestration, interruption and exit status |
 | `src/local_bench/history.py` | Compatible historical measurements, resume selection and result provenance |
+| `src/local_bench/downloads.py` | Bounded download pairs, combined disk admission, serial fallback and queued artifact lifecycle |
 | `src/local_bench/config.py` | Catalog validation and fixed Modelfile settings |
 | `src/local_bench/system.py` | macOS pressure, available RAM, swap and owned physical footprints |
 | `src/local_bench/safety.py` | Memory/disk admission and watchdog |
@@ -83,7 +100,7 @@ The runner requires Python 3.11 or later. `uv sync` installs the package, its CL
 
 3. Resolve and verify the manifest, check disk capacity, and install Ollama if needed. Recheck resources after installation and before pulling. Follow [resource safety](resource-safety.md) for the complete rules.
 
-4. Pull one model and verify the local digest against the resolved manifest. Create a run-owned alias from `engine.modelfile_template` so the CLI uses the pinned context, output and prompt-processing limits. Admit its smoke load under the same memory budget. Check actual context and backend with `ollama ps`; skip CPU/mixed offload or mismatched settings. Record actual quantization and reasoning behavior. Recheck resource availability before each request.
+4. With the default two-download policy, admit and pull at most two models together; fall back to one if combined disk admission fails. Verify each local artifact against its resolved manifest. Only after all pulls finish, create a run-owned alias for one model from `engine.modelfile_template` so the CLI uses the pinned context, output and prompt-processing limits. Admit its smoke load under the same memory budget. Check actual context/backend/quantization and recheck resources before each request. The serial override pulls and measures one model at a time.
 
 5. Validate all three prompts with a one-token probe alias under the fixed context limit, then unload that alias and run the [benchmark profiles](benchmarking.md). Check resources before every request and run the watchdog throughout setup, download, load and inference. On a timeout or watchdog trigger, stop only the owned server and wait for exit before cleanup or recovery.
 
@@ -97,7 +114,7 @@ Record each model as successful, skipped or failed, with a reason when applicabl
 
 `results.json` and `report.md` are checkpointed during execution. `events.jsonl` records commands, progress and skip/failure reasons; `ollama.log` captures bounded server output. Generation text is captured only within the command byte limit for execution and then discarded. No serial numbers or hardware UUIDs are collected.
 
-The isolated store lives in a unique directory under `.benchmark-work/` by default. Each model starts a fresh owned server on port 11435; an occupied port causes a skip. Homebrew's cache and temporary files are directed into the run workspace. Installation destination capacity is checked separately, including when the workspace is on another volume. Ollama itself remains installed after the run.
+The isolated store lives in a unique directory under `.benchmark-work/` by default. Each model is unloaded and the owned server is stopped after measurement. In paired mode, the store may retain the verified queued partner across the next server restart on port 11435; only expected queued model names are accepted. The pair's store is emptied before another pair starts. An occupied port causes a skip. Homebrew's cache and temporary files are directed into the run workspace. Installation destination capacity is checked separately, including when the workspace is on another volume. Ollama itself remains installed after the run.
 
 Ctrl-C and SIGTERM trigger teardown; exit code 130 indicates interruption. Fatal setup, telemetry or cleanup failures return a nonzero exit code. Individual model skips/failures are recorded while processing continues. SIGKILL, power loss and a machine crash cannot run Python cleanup handlers: a stale run directory may remain, and an occupied port is never resolved by killing an unrelated process. Inspect the saved logs and the process ownership before manually removing stale files.
 

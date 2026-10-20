@@ -83,10 +83,11 @@ def tree_bytes(root):
 
 
 class Guard:
-    def __init__(self, telemetry, model, policy, paths, result_dir, model_store, owned_processes, on_sample=None):
+    def __init__(self, telemetry, model, policy, paths, result_dir, model_store, owned_processes, on_sample=None, storage_model=None):
         self.telemetry, self.model, self.policy = telemetry, model, policy
         self.paths, self.result_dir, self.model_store = paths, result_dir, model_store
         self.owned_processes = owned_processes
+        self.storage_model = storage_model or model
         self.on_sample = on_sample or (lambda sample: None)
         self.model_baseline = telemetry.snapshot()
         self.stage_baseline = self.model_baseline
@@ -103,7 +104,7 @@ class Guard:
         credit = self.process_footprint() if resident else 0
         reason = memory_reason(self.model, self.policy, self.telemetry.snapshot(), credit)
         if not reason and disk:
-            reason = disk_reason(self.model, self.policy, self.paths)
+            reason = disk_reason(self.storage_model, self.policy, self.paths)
         if reason:
             raise SafetyError(reason)
 
@@ -169,7 +170,7 @@ class Guard:
             raise SafetyError(f"watchdog:{reason}")
         if tree_bytes(self.result_dir) > self.policy["disk"]["maximum_total_results_bytes"]:
             raise SafetyError("watchdog:results_budget_exceeded")
-        staging_limit = self.model["resources"]["download_bytes_upper_bound"] * self.policy["disk"]["download_and_temporary_multiplier"]
+        staging_limit = self.storage_model["resources"]["download_bytes_upper_bound"] * self.policy["disk"]["download_and_temporary_multiplier"]
         if tree_bytes(self.model_store) > staging_limit + self.policy["disk"]["maximum_manifest_bytes"] * 4:
             raise SafetyError("watchdog:download_upper_bound_exceeded")
         self.on_sample({"available": snapshot.available, "footprint": footprint, "pressure": snapshot.pressure})

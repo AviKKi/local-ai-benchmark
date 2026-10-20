@@ -111,6 +111,7 @@ class CommandResult:
     stdout: str
     stderr: str
     seconds: float
+    returncode: int = 0
 
 
 class CommandRunner:
@@ -119,10 +120,11 @@ class CommandRunner:
         self.active = None
         self.server = None
         self.guard = None
+        self.downloads = []
 
     def processes(self):
         result = {}
-        for owned in (self.server, self.active):
+        for owned in (self.server, self.active, *self.downloads):
             if owned is not None:
                 for process in owned.refresh():
                     result[process.pid] = process
@@ -130,11 +132,92 @@ class CommandRunner:
 
     def stop_all(self):
         grace = self.policy["execution"]["termination_grace_seconds"]
+        error = None
+        for owned in self.downloads:
+            try:
+                owned.stop(grace)
+            except (BenchmarkError, OSError, psutil.Error) as failure:
+                error = error or failure
+        self.downloads = []
         for name in ("active", "server"):
             owned = getattr(self, name)
             if owned is not None:
-                owned.stop(grace)
-                setattr(self, name, None)
+                try:
+                    owned.stop(grace)
+                except (BenchmarkError, OSError, psutil.Error) as failure:
+                    error = error or failure
+                finally:
+                    setattr(self, name, None)
+        if error:
+            raise error
+
+    def pull_many(self, arguments, env, timeout):
+        if not 1 <= len(arguments) <= min(2, self.policy["execution"]["max_concurrent_downloads"]):
+            raise BenchmarkError("Only one or two concurrent downloads are supported")
+        if self.active or self.downloads or any(len(command) != 3 or command[1] != "pull" for command in arguments):
+            raise BenchmarkError("Concurrent execution is restricted to isolated model pulls")
+        if self.guard:
+            self.guard.begin_stage()
+        selector = selectors.DefaultSelector()
+        states = []
+        started = time.monotonic()
+        interval = self.policy["watchdog"]["poll_interval_milliseconds"] / 1000
+        next_check = started
+        limit = self.policy["execution"]["maximum_captured_output_bytes_per_request"]
+        try:
+            for command in arguments:
+                self.event("command", " ".join(command))
+                owned = OwnedProcess(command, env, self.cwd)
+                self.downloads.append(owned)
+                state = {"owned": owned, "command": command, "output": {"stdout": bytearray(), "stderr": bytearray()},
+                         "percentage": -1, "seconds": None}
+                states.append(state)
+                for name in state["output"]:
+                    stream = getattr(owned.child, name)
+                    os.set_blocking(stream.fileno(), False)
+                    selector.register(stream, selectors.EVENT_READ, (state, name))
+            while selector.get_map() or any(state["owned"].child.poll() is None for state in states):
+                now = time.monotonic()
+                if now - started > timeout:
+                    raise SafetyError("command_timeout:parallel_pull")
+                if now >= next_check:
+                    if self.guard:
+                        self.guard.check()
+                    next_check = now + interval
+                for key, _ in selector.select(min(interval, 0.1)):
+                    state, name = key.data
+                    chunk = os.read(key.fileobj.fileno(), 65536)
+                    if not chunk:
+                        selector.unregister(key.fileobj)
+                    else:
+                        state["output"][name].extend(chunk)
+                        if sum(map(len, state["output"].values())) > limit:
+                            raise SafetyError("command_output_limit_exceeded:parallel_pull")
+                        percentages = re.findall(rb"\b(\d{1,3})%", state["output"][name][-4096:])
+                        percentage = int(percentages[-1]) // 10 * 10 if percentages else -1
+                        if 0 <= percentage <= 100 and percentage != state["percentage"]:
+                            self.event("download", f"{state['command'][-1]} · current layer {percentage}% (paired downloads)")
+                            state["percentage"] = percentage
+                for state in states:
+                    if state["seconds"] is None and state["owned"].child.poll() is not None:
+                        state["seconds"] = time.monotonic() - started
+            results = [CommandResult(*(state["output"][name].decode("utf-8", errors="replace") for name in ("stdout", "stderr")),
+                                     state["seconds"], state["owned"].child.wait()) for state in states]
+            for owned in self.downloads:
+                owned.stop(self.policy["execution"]["termination_grace_seconds"])
+            if self.guard:
+                self.guard.check()
+            return results
+        except BaseException:
+            with cleanup_signals():
+                self.stop_all()
+            raise
+        finally:
+            selector.close()
+            for state in states:
+                for name in state["output"]:
+                    getattr(state["owned"].child, name).close()
+            self.downloads = []
 
     def run(self, args, env, timeout, check=True):
         if self.guard:

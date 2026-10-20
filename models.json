@@ -90,7 +90,7 @@
       "formula": "payload = sum(config.size + every layer.size) from the resolved GGUF manifest; require payload <= model.resources.download_bytes_upper_bound. On the model-store volume reserve download_and_temporary_multiplier * download_bytes_upper_bound; add installer_budget_bytes on the installer volume and maximum_total_results_bytes on the results volume; add temporary payload allowance on a separate temporary volume if used. Aggregate charges for shared volumes. Every volume must have free >= charged_bytes + max(reserve_bytes, ceil(volume_total * reserve_volume_fraction))."
     },
     "execution": {
-      "max_concurrent_downloads": 1,
+      "max_concurrent_downloads": 2,
       "max_loaded_models": 1,
       "max_parallel_requests": 1,
       "require_owned_server": true,

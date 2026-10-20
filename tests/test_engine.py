@@ -137,6 +137,33 @@ class EngineCase(unittest.TestCase):
         self.assertEqual(list(self.engine.store.iterdir()), [])
         self.engine.stop_server.assert_called_once()
 
+    def test_successful_cleanup_can_preserve_queued_model_store(self):
+        queued = self.engine.store / "queued-weights"
+        queued.write_bytes(b"owned")
+        self.engine.commands.server = Mock()
+        self.engine.cli.return_value = CommandResult("NAME ID SIZE PROCESSOR CONTEXT UNTIL\n", "", 0.1)
+        self.engine.stop_server = Mock()
+        self.engine.clear_model(["alias"], "source", True, preserve_store=True)
+        self.assertEqual(queued.read_bytes(), b"owned")
+        self.engine.cli.assert_any_call("rm", "source")
+        self.engine.stop_server.assert_called_once()
+
+    def test_restart_accepts_only_expected_queued_model_names(self):
+        self.engine.cli.return_value = CommandResult("NAME ID SIZE\nqwen3:8b-q4_K_M abc 5GB\n", "", 0.1)
+        self.engine.verify_store(["qwen3:8b-q4_K_M"])
+        with self.assertRaisesRegex(SafetyError, "unexpected models"):
+            self.engine.verify_store()
+
+    def test_paired_pull_verifies_success_even_when_other_pull_fails(self):
+        self.engine.commands.pull_many = Mock(return_value=[CommandResult("", "", 1, 0), CommandResult("", "network timeout", 1, 1)])
+        self.engine.verify_download = Mock()
+        models = self.catalog["models"][:2]
+        manifest = Mock()
+        errors = self.engine.pull_many([(model, manifest) for model in models])
+        self.assertIsNone(errors[0])
+        self.assertIn("network timeout", errors[1])
+        self.engine.verify_download.assert_called_once_with(models[0], manifest)
+
 
 if __name__ == "__main__":
     unittest.main()

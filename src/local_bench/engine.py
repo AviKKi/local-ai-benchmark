@@ -91,7 +91,7 @@ class Ollama:
         finally:
             stream.close()
 
-    def start(self):
+    def start(self, expected_models=()):
         if self.commands.server is not None:
             return
         with socket.socket() as probe:
@@ -126,14 +126,18 @@ class Ollama:
                         if name.startswith("OLLAMA_") and actual.get(name) != value:
                             raise SafetyError(f"Server environment mismatch: {name}")
                     self.version = self.cli("--version", timeout=10).stdout.strip()
-                    listing = self.cli("list", timeout=10).stdout
-                    if len([line for line in listing.splitlines() if line.strip()]) > 1:
-                        raise SafetyError("Owned model store is unexpectedly nonempty")
+                    self.verify_store(expected_models)
                     return
             except psutil.Error as error:
                 raise SafetyError(f"Cannot verify server ownership/environment: {error}") from error
             time.sleep(0.1)
         raise SafetyError("Owned Ollama server did not become ready")
+
+    def verify_store(self, expected_models=()):
+        listing = self.cli("list", timeout=10).stdout
+        listed = {line.split()[0] for line in listing.splitlines()[1:] if line.strip()}
+        if not listed.issubset(set(expected_models)):
+            raise SafetyError("Owned model store contains unexpected models")
 
     def check_server(self):
         if self.log_error:
@@ -152,6 +156,20 @@ class Ollama:
     def pull(self, model, manifest):
         self.cli("pull", model["ollama_tag"], timeout=self.policy["execution"]["download_timeout_seconds"])
         self.verify_download(model, manifest)
+
+    def pull_many(self, items):
+        results = self.commands.pull_many([[self.binary, "pull", model["ollama_tag"]] for model, _ in items], self.env,
+                                          self.policy["execution"]["download_timeout_seconds"])
+        errors = []
+        for (model, manifest), result in zip(items, results):
+            try:
+                if result.returncode:
+                    raise BenchmarkError(f"Download exited {result.returncode}: {ANSI.sub('', result.stderr).strip()[-1500:]}")
+                self.verify_download(model, manifest)
+                errors.append(None)
+            except (BenchmarkError, OSError) as error:
+                errors.append(str(error))
+        return errors
 
     def verify_download(self, model, manifest):
         self.verify_downloaded_manifest(model, manifest)
@@ -242,7 +260,7 @@ class Ollama:
         if any(line.strip() for line in listing.splitlines()[1:]):
             raise CleanupError("Model remained loaded after ollama stop")
 
-    def clear_model(self, aliases, source, successful):
+    def clear_model(self, aliases, source, successful, preserve_store=False):
         self.commands.guard = None
         if successful and self.commands.server is not None:
             try:
@@ -257,7 +275,7 @@ class Ollama:
                 self.stop_server()
                 raise CleanupError(f"CLI model cleanup failed: {error}") from error
         self.stop_server()
-        for path in (self.store, self.temporary, self.cache):
+        for path in ((self.temporary, self.cache) if preserve_store else (self.store, self.temporary, self.cache)):
             if path.is_symlink() or path.parent != self.workspace:
                 raise CleanupError("Refusing cleanup outside the owned workspace")
             shutil.rmtree(path)

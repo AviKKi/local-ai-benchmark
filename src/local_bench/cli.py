@@ -17,6 +17,7 @@ from rich.console import Console
 
 from .config import BenchmarkError, CleanupError, SafetyError, load_catalog
 from .engine import Ollama
+from .downloads import execute_pairs
 from .history import choose_resume, measurement_signature, read_history, reusable_measurements
 from .metrics import aggregate
 from .processes import CommandRunner, cleanup_signals
@@ -54,6 +55,7 @@ def parser():
     result.add_argument("--work-dir", type=Path, default=Path(".benchmark-work"))
     result.add_argument("--output-dir", type=Path, default=Path("benchmarks/runs"))
     result.add_argument("--publish", action="store_true", help="Update README highlights and the benchmark index after a completed measured run")
+    result.add_argument("--download-workers", type=int, choices=(1, 2), help="Download one model or a pair before serial inference; default follows catalog (2)")
     mode = result.add_mutually_exclusive_group()
     mode.add_argument("--resume", action="store_true", help="Reuse completed compatible measurements for this system; retry skipped, failed and unfinished models")
     mode.add_argument("--fresh", action="store_true", help="Benchmark selected models again without reusing history")
@@ -113,6 +115,10 @@ def benchmark_model(engine, guard, model, record, catalog, ui, save, aliases):
 
 
 def execute(args, catalog, models, telemetry, specs, report, reports, ui, workspace, reusable=None):
+    if args.download_workers == 2 and not args.plan:
+        return execute_pairs(args, catalog, models, telemetry, specs, report, reports, ui, workspace, reusable,
+                             model_record, benchmark_model, Ollama)
+
     def event(kind, message):
         reports.event(kind, message)
         ui.event(kind, message)
@@ -216,6 +222,9 @@ def run(args):
     if args.device and not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9._-]*", args.device):
         raise BenchmarkError("--device must be a filesystem-safe label")
     catalog = load_catalog(args.models_file)
+    args.download_workers = args.download_workers or catalog["policy"]["execution"]["max_concurrent_downloads"]
+    if args.download_workers > catalog["policy"]["execution"]["max_concurrent_downloads"]:
+        raise BenchmarkError("--download-workers exceeds the catalog download limit")
     validate_prompts()
     models = [model for model in catalog["models"] if not args.model or any(
         fnmatch.fnmatchcase(model["id"], pattern) or fnmatch.fnmatchcase(model["ollama_tag"], pattern)
@@ -255,6 +264,8 @@ def run(args):
         "benchmark_options": catalog["benchmark"]["options"],
         "measurement_signature": measurement_signature(catalog),
         "resume": resume,
+        "download_workers": args.download_workers,
+        "download_strategy": "bounded pairs before serial inference; no downloads during measurements" if args.download_workers == 2 else "serial",
         "prompts": [vars(prompt) for prompt in PROMPTS],
         "notes": ["No output quality evaluation; generation text is not retained.",
                   "Native model templates and default thinking behavior are retained.",

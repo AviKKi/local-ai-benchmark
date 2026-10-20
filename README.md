@@ -30,7 +30,13 @@ uv run local-ai-benchmark --resume
 uv run local-ai-benchmark --fresh
 ```
 
-Reports and logs are written to `benchmarks/runs/<device-id>/<run-id>/`. Weights, temporary aliases, installer cache and the owned server are cleaned up after each model; the Ollama installation remains available. See [runner usage](architecture/runner-lifecycle.md#commands) for model filters, plain logs, publication and verification.
+Reports and logs are written to `benchmarks/runs/<device-id>/<run-id>/`. Temporary aliases, installer cache and the owned server are cleaned up after each model; queued weights may remain until the pair finishes. The Ollama installation remains available. See [runner usage](architecture/runner-lifecycle.md#commands) for model filters, plain logs, publication and verification.
+
+Downloads use **bounded pairs** by default, based on local network measurements. Only one model is loaded/benchmarked at a time, and no downloads run during timed inference. Queue disk admission includes both models and staging overhead; if the pair does not fit, the runner falls back to serial downloads. To force serial operation:
+
+```sh
+uv run local-ai-benchmark --resume --download-workers 1
+```
 
 ## Latest Benchmarks
 

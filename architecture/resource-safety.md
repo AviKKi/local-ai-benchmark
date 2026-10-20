@@ -18,6 +18,14 @@ RAM estimates are unmeasured planning values. A catalog cannot prevent OOM by it
 
    The implementation additionally reserves the installer budget at Homebrew's installation destination. This protects the boot volume when cache/work directories are on another disk and is conservative when both locations share a volume.
 
+## Bounded Download Pairs
+
+The default download limit is two, with one loaded model and one inference request at a time. Resolve each manifest before pulling. Before admitting a pair, use the **sum** of both catalog download upper bounds in the disk formula, with no shared-blob deductions. This includes both retained and queued weights, temporary staging, installer/results budgets and the existing `max(20 GiB, 10%)` reserve, which is stricter than a 10 GiB floor. If individual models fit but the pair does not, defer the second model and download serially instead of skipping it solely for pair capacity.
+
+During paired transfers, both CLI clients and the owned daemon are included in the watchdog. No model is loaded; the largest individually admitted model's memory budget bounds the download phase rather than reserving two loaded models. During inference, use the current model's memory budget while retaining the combined store-size bound for any queued weights. Recheck RAM before each load/request and disk reserves throughout. All pulls finish before probes, warmup or timed inference begin, so CPU/disk/network activity from downloads cannot overlap measured inference.
+
+After successful inference, remove that model's aliases/source and stop the daemon. Preserve only the owned store for the already-downloaded partner; a restarted daemon must list no unexpected model names, and the queued artifact is reverified before use. Clear the entire store/cache/temp directories at the end of the pair. A failed inference invalidates the pair cache and clears all owned weights; a later partner is re-downloaded safely instead of using potentially stale files. A failed pull does not discard a successfully verified partner. A watchdog/timeout abort terminates both clients and the daemon before cleanup.
+
 ## Runtime Watchdog
 
 Run the watchdog during installation, download, load, warmup and inference, using the configured polling interval, memory budget, memory-pressure, swap-growth, disk and output limits. Measure the server **and model runner**, not only the small CLI client; include Metal allocations without double-counting shared pages. Take a swap baseline before each stage. If a bound or timeout is reached, cancel clients and stop the owned daemon, waiting for exit so server-side inference/downloads actually stop. A disconnected CLI is not proof that server work ended. Never kill an unrelated daemon. Record the failure, clean up, and continue only after the host is healthy and the owned server is restarted.
