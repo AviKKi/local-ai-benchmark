@@ -3,7 +3,10 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+import psutil
+
 from .config import SafetyError
+from .processes import process_is_live
 
 
 def memory_budget(model, policy):
@@ -113,8 +116,10 @@ class Guard:
         for process in self.owned_processes():
             try:
                 total += self.telemetry.footprint(process)
+            except (psutil.NoSuchProcess, ProcessLookupError):
+                continue
             except Exception:
-                if process.is_running():
+                if process_is_live(process):
                     raise
         return total
 
@@ -138,9 +143,15 @@ class Guard:
                 previous = self.cpu_previous.get(process.pid, current)
                 cpu_total += max(0, current - previous)
                 self.cpu_previous[process.pid] = current
-            except Exception:
-                if process.is_running():
-                    raise SafetyError("CPU telemetry unavailable for owned process")
+            except (psutil.NoSuchProcess, ProcessLookupError):
+                continue
+            except (psutil.Error, OSError) as error:
+                try:
+                    live = process_is_live(process)
+                except (psutil.Error, OSError):
+                    live = True
+                if live:
+                    raise SafetyError(f"CPU telemetry unavailable for owned process {process.pid}: {type(error).__name__}: {error}") from error
         if self.last_cpu_time is not None and now > self.last_cpu_time:
             self.peak_cpu_percent = max(self.peak_cpu_percent, cpu_total / (now - self.last_cpu_time) * 100)
         self.last_cpu_time = now

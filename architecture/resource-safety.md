@@ -26,7 +26,11 @@ Record rejected models and their reasons in both JSON and Markdown output. Stati
 
 The memory watchdog uses macOS process physical-footprint accounting for the owned server, runners and active command. It separately tracks the drop in system available memory since the model began and compares the larger value to the model budget; it does not add CPU and GPU memory estimates together. Shared/kernel attribution and activity in other applications can affect these observations, so they are conservative operational measurements rather than exact GPU memory attribution. GPU utilization is reported as null with an explicit reason because it requires additional platform-specific telemetry.
 
+Processes can exit between discovery and sampling, especially when unloading a probe model. Missing or zombie processes are excluded from CPU and footprint samples instead of failing the model. Unavailable telemetry for a live process still aborts; CPU errors include the PID and underlying exception to distinguish permission failures from normal process exit.
+
 Metadata HTTP/DNS runs in an owned subprocess with byte limits, a deadline and watchdog checks, so a stalled network request cannot bypass monitoring. The model-store watchdog allows the catalog's staging multiplier; final downloaded blob sizes must exactly match the verified manifest. Frozen tag digest drift produces a skip and requires a catalog review; the runner never relaxes that integrity check automatically.
+
+Local verification supports Ollama's `manifests-v2/ollama.com/` layout, including links to content-addressed manifest blobs, and the older `manifests/registry.ollama.ai/` layout. The v2 entry takes precedence when both exist. Both formats require the full admitted SHA-256 to match; missing files, dangling links, links outside the owned store and actual digest mismatches have distinct errors.
 
 
 ## Related Documentation

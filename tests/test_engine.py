@@ -1,4 +1,6 @@
 import json
+import hashlib
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -54,10 +56,76 @@ class EngineCase(unittest.TestCase):
         with self.assertRaisesRegex(BenchmarkError, "num_batch"):
             self.engine.create_alias(self.catalog["models"][0])
 
-    def test_download_manifest_drift_fails_before_loading(self):
+    def test_missing_download_manifest_has_distinct_error(self):
         manifest = Mock(digest="a"*64)
-        with self.assertRaisesRegex(BenchmarkError, "manifest digest"):
+        with self.assertRaisesRegex(BenchmarkError, "manifest not found"):
             self.engine.pull(self.catalog["models"][0], manifest)
+
+    def manifest_fixture(self, directory="manifests-v2", host="ollama.com", linked=False):
+        model = self.catalog["models"][0]
+        family, revision = model["ollama_tag"].split(":")
+        raw = json.dumps({"schemaVersion": 2, "layers": []}).encode()
+        manifest = Mock(digest=hashlib.sha256(raw).hexdigest())
+        local = self.engine.store / directory / host / "library" / family / revision
+        local.parent.mkdir(parents=True, exist_ok=True)
+        if linked:
+            blob = self.engine.store / "blobs" / f"sha256-{manifest.digest}"
+            blob.parent.mkdir(parents=True, exist_ok=True)
+            blob.write_bytes(raw)
+            local.symlink_to(os.path.relpath(blob, local.parent))
+        else:
+            local.write_bytes(raw)
+        return model, manifest, local
+
+    def test_legacy_manifest_verified(self):
+        model, manifest, _ = self.manifest_fixture("manifests", "registry.ollama.ai")
+        self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_legacy_public_host_alias_verified(self):
+        model, manifest, _ = self.manifest_fixture("manifests", "ollama.com")
+        self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_v2_copied_manifest_verified(self):
+        model, manifest, _ = self.manifest_fixture()
+        self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_v2_content_addressed_symlink_verified(self):
+        model, manifest, _ = self.manifest_fixture(linked=True)
+        self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_v2_takes_precedence_over_legacy_manifest(self):
+        model, manifest, local = self.manifest_fixture()
+        self.manifest_fixture("manifests", "registry.ollama.ai")
+        local.write_bytes(b"changed manifest")
+        with self.assertRaisesRegex(BenchmarkError, "manifest digest differs"):
+            self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_content_addressed_manifest_still_requires_hash_match(self):
+        model, manifest, local = self.manifest_fixture(linked=True)
+        local.write_bytes(b"corrupted blob")
+        with self.assertRaisesRegex(BenchmarkError, "manifest digest differs"):
+            self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_manifest_symlink_cannot_leave_owned_store(self):
+        model, manifest, local = self.manifest_fixture()
+        outside = self.workspace / "outside-manifest"
+        outside.write_bytes(local.read_bytes())
+        local.unlink()
+        local.symlink_to(outside)
+        with self.assertRaisesRegex(BenchmarkError, "outside the owned"):
+            self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_dangling_manifest_link_fails_closed(self):
+        model, manifest, local = self.manifest_fixture(linked=True)
+        local.resolve().unlink()
+        with self.assertRaisesRegex(BenchmarkError, "Cannot read downloaded manifest"):
+            self.engine.verify_downloaded_manifest(model, manifest)
+
+    def test_manifest_size_is_bounded(self):
+        model, manifest, local = self.manifest_fixture()
+        self.engine.policy["disk"]["maximum_manifest_bytes"] = 4
+        with self.assertRaisesRegex(BenchmarkError, "metadata byte limit"):
+            self.engine.verify_downloaded_manifest(model, manifest)
 
     def test_failed_model_cleanup_preserves_neighboring_files(self):
         neighbor = self.workspace / "user-model"

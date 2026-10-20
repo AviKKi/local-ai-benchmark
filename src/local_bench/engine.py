@@ -151,10 +151,10 @@ class Ollama:
 
     def pull(self, model, manifest):
         self.cli("pull", model["ollama_tag"], timeout=self.policy["execution"]["download_timeout_seconds"])
-        family, revision = model["ollama_tag"].split(":")
-        local = self.store / "manifests" / "registry.ollama.ai" / "library" / family / revision
-        if not local.is_file() or hashlib.sha256(local.read_bytes()).hexdigest() != manifest.digest:
-            raise BenchmarkError("Downloaded manifest digest differs from the admitted registry manifest")
+        self.verify_download(model, manifest)
+
+    def verify_download(self, model, manifest):
+        self.verify_downloaded_manifest(model, manifest)
         for descriptor in [manifest.document["config"], *manifest.document["layers"]]:
             blob = self.store / "blobs" / descriptor["digest"].replace(":", "-")
             if not blob.is_file() or blob.stat().st_size != descriptor["size"]:
@@ -163,6 +163,32 @@ class Ollama:
                 with blob.open("rb") as stream:
                     if stream.read(4) != b"GGUF":
                         raise BenchmarkError("Downloaded model layer is not GGUF")
+
+    def verify_downloaded_manifest(self, model, manifest):
+        family, revision = model["ollama_tag"].split(":")
+        candidates = [
+            self.store / "manifests-v2" / "ollama.com" / "library" / family / revision,
+            self.store / "manifests" / "registry.ollama.ai" / "library" / family / revision,
+            self.store / "manifests" / "ollama.com" / "library" / family / revision,
+        ]
+        local = next((path for path in candidates if path.exists() or path.is_symlink()), None)
+        if local is None:
+            raise BenchmarkError("Downloaded manifest not found in supported Ollama stores (manifests-v2 or manifests)")
+        try:
+            resolved = local.resolve(strict=True)
+            if not resolved.is_relative_to(self.store.resolve()):
+                raise BenchmarkError("Downloaded manifest resolves outside the owned model store")
+            if local.is_symlink() and resolved != (self.store / "blobs" / f"sha256-{manifest.digest}").resolve():
+                raise BenchmarkError("Downloaded manifest link differs from the admitted registry manifest digest")
+            maximum = self.policy["disk"]["maximum_manifest_bytes"]
+            with resolved.open("rb") as stream:
+                raw = stream.read(maximum + 1)
+            if len(raw) > maximum:
+                raise BenchmarkError("Downloaded manifest exceeds its metadata byte limit")
+        except (OSError, RuntimeError) as error:
+            raise BenchmarkError(f"Cannot read downloaded manifest: {error}") from error
+        if hashlib.sha256(raw).hexdigest() != manifest.digest:
+            raise BenchmarkError("Downloaded manifest digest differs from the admitted registry manifest")
 
     def create_alias(self, model, probe=False):
         alias = f"local-bench-{model['id']}{'-probe' if probe else ''}"

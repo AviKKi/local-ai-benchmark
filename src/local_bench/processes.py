@@ -12,6 +12,13 @@ import psutil
 from .config import BenchmarkError, CleanupError, SafetyError
 
 
+def process_is_live(process):
+    try:
+        return process.is_running() and process.status() not in (psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD)
+    except psutil.NoSuchProcess:
+        return False
+
+
 @contextmanager
 def cleanup_signals():
     previous = {number: signal.getsignal(number) for number in (signal.SIGINT, signal.SIGTERM)}
@@ -57,7 +64,7 @@ class OwnedProcess:
         live = []
         for process in self.known.values():
             try:
-                if process.is_running() and process.status() != psutil.STATUS_ZOMBIE:
+                if process_is_live(process):
                     live.append(process)
             except psutil.NoSuchProcess:
                 continue

@@ -6,6 +6,7 @@ from dataclasses import asdict, dataclass
 import psutil
 
 from .config import SafetyError
+from .processes import process_is_live
 
 
 class RUsageInfo(ctypes.Structure):
@@ -67,7 +68,7 @@ class MacTelemetry:
     def footprint(self, process):
         info = RUsageInfo()
         if self.libproc.proc_pid_rusage(process.pid, 0, ctypes.byref(info)):
-            if not process.is_running():
+            if not process_is_live(process):
                 return 0
             raise SafetyError(f"Cannot read physical footprint of owned process {process.pid}")
         return info.physical_footprint
