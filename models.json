@@ -1,0 +1,3478 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-10-21",
+  "scope": {
+    "phase": 1,
+    "engine": "ollama",
+    "interface": "cli",
+    "os": [
+      "darwin"
+    ],
+    "architectures": [
+      "arm64"
+    ],
+    "model_type": "llm",
+    "input_modalities": [
+      "text"
+    ],
+    "network_inference_allowed": false
+  },
+  "coverage": {
+    "description": "Broad selection of current general, coding and reasoning LLM families with official local Ollama artifacts, plus useful small baselines and larger-host candidates. This is a researched selection, not an exhaustive quality ranking or every community fine-tune.",
+    "selection": "Prefer explicit quantized GGUF tags; avoid latest aliases, MLX artifacts and cloud inference. Published sources were checked through 2026-10-21.",
+    "size_provenance": "Registry pages publish rounded decimal sizes. Approximate sizes are not exact manifests; upper bounds add 15% plus 64 MiB. Live manifest checks are mandatory before downloading.",
+    "memory_provenance": "All RAM figures and minimum host tiers are conservative planning estimates, not vendor guarantees or measurements on the two Macs.",
+    "safety_limitation": "A JSON catalog cannot enforce limits or guarantee zero OOM. A consumer must implement every admission check, watchdog and cleanup rule; skip when required information is unavailable.",
+    "unsupported_scope": [
+      "non-macOS hosts",
+      "Intel Macs",
+      "MLX",
+      "embeddings",
+      "image generation",
+      "speech",
+      "decision-only and reranker models"
+    ]
+  },
+  "units": {
+    "memory_and_disk": "bytes",
+    "gibibyte": 1073741824,
+    "published_registry_gigabyte": 1000000000,
+    "timeout": "seconds",
+    "duration": "seconds"
+  },
+  "policy": {
+    "failure_mode": "skip_and_record_reason",
+    "selection_order": [
+      "enabled_first",
+      "resources.download_bytes_upper_bound_ascending",
+      "id_ascending"
+    ],
+    "recheck_before": [
+      "download",
+      "load",
+      "each_request"
+    ],
+    "unknown_required_metadata_action": "skip",
+    "allow_automatic_context_or_concurrency_increase": false,
+    "allow_cloud_fallback": false,
+    "memory": {
+      "estimate_multiplier": 1.25,
+      "maximum_physical_memory_fraction": 0.6,
+      "os_reserve_bytes": 4294967296,
+      "minimum_available_after_admission_bytes": 2147483648,
+      "maximum_metal_working_set_fraction_if_reported": 0.8,
+      "count_cpu_and_gpu_unified_memory_once": true,
+      "available_memory_required": true,
+      "allow_swap_as_capacity": false,
+      "admit_only_when_memory_pressure": "normal",
+      "formula": "budget = ceil(model.resources.estimated_peak_unified_memory_bytes * estimate_multiplier); require physical >= minimum_physical_memory_bytes AND budget <= physical * maximum_physical_memory_fraction AND budget + os_reserve_bytes <= physical AND budget + minimum_available_after_admission_bytes <= available; if Metal recommended working set is available also require budget <= recommended_working_set * maximum_metal_working_set_fraction_if_reported."
+    },
+    "disk": {
+      "reserve_bytes": 21474836480,
+      "reserve_volume_fraction": 0.1,
+      "download_and_temporary_multiplier": 3,
+      "installer_budget_bytes": 2147483648,
+      "maximum_total_results_bytes": 1073741824,
+      "require_live_manifest_layer_sizes": true,
+      "maximum_manifest_bytes": 4194304,
+      "maximum_single_manifest_layer_bytes": 214748364800,
+      "count_all_artifact_layers": true,
+      "credit_existing_or_shared_blobs": false,
+      "check_filesystems": [
+        "model_store",
+        "temporary_directory",
+        "results_directory",
+        "installer_cache"
+      ],
+      "aggregate_budgets_on_same_filesystem": true,
+      "count_purgeable_space_as_free": false,
+      "formula": "payload = sum(config.size + every layer.size) from the resolved GGUF manifest; require payload <= model.resources.download_bytes_upper_bound. On the model-store volume reserve download_and_temporary_multiplier * download_bytes_upper_bound; add installer_budget_bytes on the installer volume and maximum_total_results_bytes on the results volume; add temporary payload allowance on a separate temporary volume if used. Aggregate charges for shared volumes. Every volume must have free >= charged_bytes + max(reserve_bytes, ceil(volume_total * reserve_volume_fraction))."
+    },
+    "execution": {
+      "max_concurrent_downloads": 1,
+      "max_loaded_models": 1,
+      "max_parallel_requests": 1,
+      "require_owned_server": true,
+      "require_empty_model_store_at_start": true,
+      "require_exclusive_run_lock": true,
+      "require_server_environment_verification": true,
+      "refuse_if_port_in_use": true,
+      "require_compatible_ollama_backend": true,
+      "require_smoke_load_after_resource_admission": true,
+      "on_unsupported_model": "skip_without_cpu_or_cloud_fallback",
+      "on_model_failure": "unload_cleanup_and_continue",
+      "max_retries_per_model": 0,
+      "download_timeout_seconds": 3600,
+      "load_timeout_seconds": 600,
+      "request_timeout_seconds": 180,
+      "unload_timeout_seconds": 30,
+      "termination_grace_seconds": 5,
+      "maximum_captured_output_bytes_per_request": 4194304
+    },
+    "watchdog": {
+      "poll_interval_milliseconds": 250,
+      "minimum_available_memory_bytes": 2147483648,
+      "maximum_swap_growth_bytes": 67108864,
+      "abort_on_memory_pressure": [
+        "warning",
+        "critical"
+      ],
+      "abort_if_model_exceeds_memory_budget": true,
+      "abort_if_disk_below_reserve": true,
+      "abort_if_download_exceeds_upper_bound": true,
+      "abort_if_results_exceed_budget": true,
+      "on_missing_telemetry": "abort_current_model",
+      "on_trigger": "cancel_clients; terminate_only_run_owned_server_and_wait_for_exit_to_stop_inference_and_downloads; clean_run_owned_artifacts; recheck_health_and_restart_owned_server_before_next_model"
+    },
+    "integrity": {
+      "require_registry_digest_prefix_match_before_pull": true,
+      "record_resolved_full_sha256": true,
+      "require_local_digest_match_after_pull": true,
+      "on_tag_digest_change": "skip_until_catalog_is_reviewed",
+      "on_manifest_index_or_non_gguf": "skip",
+      "on_missing_digest_or_layer_sizes": "skip",
+      "on_missing_quantization": "inspect_and_record_actual_value_before_benchmark",
+      "metadata_fetch_timeout_seconds": 30
+    },
+    "cleanup": {
+      "unload_after_each_model": true,
+      "remove_model_after_each_model": true,
+      "remove_temporary_alias_before_source_model": true,
+      "delete_only_artifacts_created_by_this_run": true,
+      "never_delete_preexisting_models": true,
+      "cleanup_on": [
+        "success",
+        "failure",
+        "timeout",
+        "interrupt"
+      ],
+      "wait_until_unloaded_before_next_model": true,
+      "verify_free_space_after_cleanup": true,
+      "do_not_assume_shared_blobs_were_reclaimed": true,
+      "on_cleanup_or_unload_failure": "stop_run"
+    }
+  },
+  "engine": {
+    "server_command": [
+      "ollama",
+      "serve"
+    ],
+    "server_environment": {
+      "OLLAMA_HOST": "127.0.0.1:11435",
+      "OLLAMA_MODELS": "{absolute_run_owned_model_store}",
+      "OLLAMA_NO_CLOUD": "1",
+      "OLLAMA_MAX_LOADED_MODELS": "1",
+      "OLLAMA_NUM_PARALLEL": "1",
+      "OLLAMA_MAX_QUEUE": "1",
+      "OLLAMA_CONTEXT_LENGTH": "2048",
+      "OLLAMA_KV_CACHE_TYPE": "f16",
+      "OLLAMA_KEEP_ALIVE": "120s"
+    },
+    "client_environment": {
+      "OLLAMA_HOST": "127.0.0.1:11435"
+    },
+    "cli": {
+      "pull": [
+        "ollama",
+        "pull",
+        "{ollama_tag}"
+      ],
+      "inspect": [
+        "ollama",
+        "show",
+        "{ollama_tag}"
+      ],
+      "list": [
+        "ollama",
+        "list"
+      ],
+      "create_benchmark_alias": [
+        "ollama",
+        "create",
+        "{run_owned_alias}",
+        "-f",
+        "{absolute_modelfile_path}"
+      ],
+      "run": [
+        "ollama",
+        "run",
+        "--verbose",
+        "{run_owned_alias}",
+        "{prompt}"
+      ],
+      "running_models": [
+        "ollama",
+        "ps"
+      ],
+      "stop": [
+        "ollama",
+        "stop",
+        "{run_owned_alias}"
+      ],
+      "remove_alias": [
+        "ollama",
+        "rm",
+        "{run_owned_alias}"
+      ],
+      "remove_source": [
+        "ollama",
+        "rm",
+        "{ollama_tag}"
+      ]
+    },
+    "modelfile_template": "FROM {ollama_tag}\nPARAMETER num_ctx 2048\nPARAMETER num_predict 256\nPARAMETER num_batch 128\nPARAMETER temperature 0\nPARAMETER seed 42\n",
+    "notes": [
+      "Spawn argv directly; placeholders are individual arguments, never interpolated into a shell command.",
+      "Use a unique run-owned alias and directory. The alias shares weights inside the isolated store; it does not duplicate the model download.",
+      "Apply environment to the owned server process, not only to the client. Never silently reuse the desktop app's daemon.",
+      "Use the installed Ollama version only after verifying the needed CLI flags, parameters and backend; no unverified minimum version is asserted."
+    ]
+  },
+  "benchmark": {
+    "options": {
+      "num_ctx": 2048,
+      "num_predict": 256,
+      "num_batch": 128,
+      "temperature": 0,
+      "seed": 42
+    },
+    "maximum_rendered_prompt_tokens": 1024,
+    "prompt_token_limit_includes_template_and_system": true,
+    "fresh_conversation_per_request": true,
+    "input_images_allowed": false,
+    "warmup_requests": 1,
+    "thinking_mode": "model_default",
+    "record_actual_thinking_mode": true,
+    "count_generated_thinking_tokens": true,
+    "profiles": [
+      {
+        "id": "single",
+        "measured_requests": 1,
+        "concurrency": 1
+      },
+      {
+        "id": "batch_sequential",
+        "measured_requests": 8,
+        "concurrency": 1
+      }
+    ],
+    "batch_definition": "A fixed batch of independent CLI invocations executed sequentially with one resident model. num_batch is prompt-processing microbatch size, not request concurrency. Concurrent batching needs a separately budgeted future profile.",
+    "metrics": [
+      "prompt_tokens",
+      "generated_tokens",
+      "prompt_eval_tokens_per_second",
+      "generation_tokens_per_second",
+      "wall_time_seconds",
+      "model_load_seconds",
+      "peak_runner_and_server_memory_bytes",
+      "system_memory_pressure",
+      "swap_growth_bytes",
+      "cpu_usage",
+      "gpu_usage_if_available"
+    ],
+    "on_missing_or_zero_duration_metric": "record_null_with_reason; never_divide_by_zero",
+    "results_required_fields": [
+      "catalog_schema_version",
+      "catalog_as_of",
+      "model_id",
+      "resolved_manifest_sha256",
+      "actual_quantization",
+      "ollama_version",
+      "system_specs",
+      "actual_context_length",
+      "actual_backend",
+      "thinking_mode",
+      "benchmark_profile",
+      "metrics",
+      "status",
+      "skip_or_failure_reason"
+    ],
+    "result_formats": [
+      "json",
+      "markdown"
+    ]
+  },
+  "models": [
+    {
+      "id": "gemma3-270m-it-q8-0",
+      "ollama_tag": "gemma3:270m-it-q8_0",
+      "publisher": "Google",
+      "family": "gemma3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 0.27,
+      "active_parameters_billion": null,
+      "quantization": "Q8_0",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma3:270m-it-q8_0",
+        "tags_url": "https://ollama.com/library/gemma3/tags",
+        "observed_manifest_sha256_prefix": "e7d36fb2c3b3",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma3/manifests/270m-it-q8_0"
+      },
+      "resources": {
+        "published_download_bytes_approx": 292000000,
+        "download_bytes_upper_bound": 403701760,
+        "estimated_peak_unified_memory_bytes": 2147483648,
+        "minimum_physical_memory_bytes": 8589934592,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-0-6b-q4-k-m",
+      "ollama_tag": "qwen3:0.6b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 0.6,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3:0.6b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3/tags",
+        "observed_manifest_sha256_prefix": "7df6b6e09427",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/0.6b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 523000000,
+        "download_bytes_upper_bound": 668991488,
+        "estimated_peak_unified_memory_bytes": 2147483648,
+        "minimum_physical_memory_bytes": 8589934592,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "gemma3-1b-it-q4-k-m",
+      "ollama_tag": "gemma3:1b-it-q4_K_M",
+      "publisher": "Google",
+      "family": "gemma3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 1,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma3:1b-it-q4_K_M",
+        "tags_url": "https://ollama.com/library/gemma3/tags",
+        "observed_manifest_sha256_prefix": "97558784bdc9",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma3/manifests/1b-it-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 806000000,
+        "download_bytes_upper_bound": 994050048,
+        "estimated_peak_unified_memory_bytes": 3221225472,
+        "minimum_physical_memory_bytes": 8589934592,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "llama3-2-1b-instruct-q4-k-m",
+      "ollama_tag": "llama3.2:1b-instruct-q4_K_M",
+      "publisher": "Meta",
+      "family": "llama3.2",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 1,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/llama3.2:1b-instruct-q4_K_M",
+        "tags_url": "https://ollama.com/library/llama3.2/tags",
+        "observed_manifest_sha256_prefix": "22bc6b92eb01",
+        "manifest_url": "https://registry.ollama.ai/v2/library/llama3.2/manifests/1b-instruct-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 808000000,
+        "download_bytes_upper_bound": 997195776,
+        "estimated_peak_unified_memory_bytes": 3221225472,
+        "minimum_physical_memory_bytes": 8589934592,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen2-5-coder-1-5b-instruct-q4-k-m",
+      "ollama_tag": "qwen2.5-coder:1.5b-instruct-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen2.5-coder",
+      "selection_group": "baseline",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 1.5,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen2.5-coder:1.5b-instruct-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen2.5-coder/tags",
+        "observed_manifest_sha256_prefix": "d7372fd82851",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen2.5-coder/manifests/1.5b-instruct-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 986000000,
+        "download_bytes_upper_bound": 1201668096,
+        "estimated_peak_unified_memory_bytes": 3221225472,
+        "minimum_physical_memory_bytes": 8589934592,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "deepseek-r1-1-5b-qwen-distill-q4-k-m",
+      "ollama_tag": "deepseek-r1:1.5b-qwen-distill-q4_K_M",
+      "publisher": "DeepSeek",
+      "family": "deepseek-r1",
+      "selection_group": "baseline",
+      "task": "reasoning",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 1.5,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/deepseek-r1:1.5b-qwen-distill-q4_K_M",
+        "tags_url": "https://ollama.com/library/deepseek-r1/tags",
+        "observed_manifest_sha256_prefix": "e0979632db5a",
+        "manifest_url": "https://registry.ollama.ai/v2/library/deepseek-r1/manifests/1.5b-qwen-distill-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 1100000000,
+        "download_bytes_upper_bound": 1332740096,
+        "estimated_peak_unified_memory_bytes": 3758096384,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-1-7b-q4-k-m",
+      "ollama_tag": "qwen3:1.7b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 1.7,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3:1.7b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3/tags",
+        "observed_manifest_sha256_prefix": "8f68893c685c",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/1.7b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 1400000000,
+        "download_bytes_upper_bound": 1677721600,
+        "estimated_peak_unified_memory_bytes": 3758096384,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "llama3-2-3b-instruct-q4-k-m",
+      "ollama_tag": "llama3.2:3b-instruct-q4_K_M",
+      "publisher": "Meta",
+      "family": "llama3.2",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 3,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/llama3.2:3b-instruct-q4_K_M",
+        "tags_url": "https://ollama.com/library/llama3.2/tags",
+        "observed_manifest_sha256_prefix": "a80c4f17acd5",
+        "manifest_url": "https://registry.ollama.ai/v2/library/llama3.2/manifests/3b-instruct-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 2000000000,
+        "download_bytes_upper_bound": 2367684608,
+        "estimated_peak_unified_memory_bytes": 4294967296,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "phi4-mini-3-8b-q4-k-m",
+      "ollama_tag": "phi4-mini:3.8b-q4_K_M",
+      "publisher": "Microsoft",
+      "family": "phi4-mini",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 3.8,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/phi4-mini:3.8b-q4_K_M",
+        "tags_url": "https://ollama.com/library/phi4-mini/tags",
+        "observed_manifest_sha256_prefix": "78fad5d182a7",
+        "manifest_url": "https://registry.ollama.ai/v2/library/phi4-mini/manifests/3.8b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 2500000000,
+        "download_bytes_upper_bound": 2942304256,
+        "estimated_peak_unified_memory_bytes": 5368709120,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen2-5-coder-7b-instruct-q4-k-m",
+      "ollama_tag": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen2.5-coder",
+      "selection_group": "baseline",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 7,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen2.5-coder:7b-instruct-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen2.5-coder/tags",
+        "observed_manifest_sha256_prefix": "dae161e27b0e",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen2.5-coder/manifests/7b-instruct-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 4700000000,
+        "download_bytes_upper_bound": 5472518144,
+        "estimated_peak_unified_memory_bytes": 7516192768,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-8b-q4-k-m",
+      "ollama_tag": "qwen3:8b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 8,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3:8b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3/tags",
+        "observed_manifest_sha256_prefix": "500a1f067a9f",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/8b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 5200000000,
+        "download_bytes_upper_bound": 6047137792,
+        "estimated_peak_unified_memory_bytes": 8053063680,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-14b-q4-k-m",
+      "ollama_tag": "qwen3:14b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 14,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3:14b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3/tags",
+        "observed_manifest_sha256_prefix": "bdbd181c33f2",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/14b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 9300000000,
+        "download_bytes_upper_bound": 10762584064,
+        "estimated_peak_unified_memory_bytes": 13958643712,
+        "minimum_physical_memory_bytes": 34359738368,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "phi4-14b-q4-k-m",
+      "ollama_tag": "phi4:14b-q4_K_M",
+      "publisher": "Microsoft",
+      "family": "phi4",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 14,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/phi4:14b-q4_K_M",
+        "tags_url": "https://ollama.com/library/phi4/tags",
+        "observed_manifest_sha256_prefix": "ac896e5b8b34",
+        "manifest_url": "https://registry.ollama.ai/v2/library/phi4/manifests/14b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 9100000000,
+        "download_bytes_upper_bound": 10532945920,
+        "estimated_peak_unified_memory_bytes": 13958643712,
+        "minimum_physical_memory_bytes": 34359738368,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "deepseek-r1-14b-qwen-distill-q4-k-m",
+      "ollama_tag": "deepseek-r1:14b-qwen-distill-q4_K_M",
+      "publisher": "DeepSeek",
+      "family": "deepseek-r1",
+      "selection_group": "baseline",
+      "task": "reasoning",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 14,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/deepseek-r1:14b-qwen-distill-q4_K_M",
+        "tags_url": "https://ollama.com/library/deepseek-r1/tags",
+        "observed_manifest_sha256_prefix": "c333b7232bdb",
+        "manifest_url": "https://registry.ollama.ai/v2/library/deepseek-r1/manifests/14b-qwen-distill-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 9000000000,
+        "download_bytes_upper_bound": 10417602560,
+        "estimated_peak_unified_memory_bytes": 13958643712,
+        "minimum_physical_memory_bytes": 34359738368,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "deepseek-r1-32b-qwen-distill-q4-k-m",
+      "ollama_tag": "deepseek-r1:32b-qwen-distill-q4_K_M",
+      "publisher": "DeepSeek",
+      "family": "deepseek-r1",
+      "selection_group": "baseline",
+      "task": "reasoning",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 32,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/deepseek-r1:32b-qwen-distill-q4_K_M",
+        "tags_url": "https://ollama.com/library/deepseek-r1/tags",
+        "observed_manifest_sha256_prefix": "edba8017331d",
+        "manifest_url": "https://registry.ollama.ai/v2/library/deepseek-r1/manifests/32b-qwen-distill-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 20000000000,
+        "download_bytes_upper_bound": 23067623424,
+        "estimated_peak_unified_memory_bytes": 27917287424,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-32b",
+      "ollama_tag": "qwen3:32b",
+      "publisher": "Alibaba",
+      "family": "qwen3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 32,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3:32b",
+        "tags_url": "https://ollama.com/library/qwen3/tags",
+        "observed_manifest_sha256_prefix": "030ee887880f",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/32b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 20000000000,
+        "download_bytes_upper_bound": 23067623424,
+        "estimated_peak_unified_memory_bytes": 27917287424,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-5-0-8b-q8-0",
+      "ollama_tag": "qwen3.5:0.8b-q8_0",
+      "publisher": "Alibaba",
+      "family": "qwen3.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 0.8,
+      "active_parameters_billion": null,
+      "quantization": "Q8_0",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.5:0.8b-q8_0",
+        "tags_url": "https://ollama.com/library/qwen3.5/tags",
+        "observed_manifest_sha256_prefix": "7c00f78aed0f",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.5/manifests/0.8b-q8_0"
+      },
+      "resources": {
+        "published_download_bytes_approx": 1000000000,
+        "download_bytes_upper_bound": 1217396736,
+        "estimated_peak_unified_memory_bytes": 3758096384,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-5-2b-q4-k-m",
+      "ollama_tag": "qwen3.5:2b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 2,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.5:2b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.5/tags",
+        "observed_manifest_sha256_prefix": "1e2d21a4f03a",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.5/manifests/2b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 1900000000,
+        "download_bytes_upper_bound": 2252341248,
+        "estimated_peak_unified_memory_bytes": 4831838208,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-5-4b-q4-k-m",
+      "ollama_tag": "qwen3.5:4b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 4,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.5:4b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.5/tags",
+        "observed_manifest_sha256_prefix": "d8b0f5e9760c",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.5/manifests/4b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 3300000000,
+        "download_bytes_upper_bound": 3862953984,
+        "estimated_peak_unified_memory_bytes": 6442450944,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-5-9b-q4-k-m",
+      "ollama_tag": "qwen3.5:9b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 9,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.5:9b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.5/tags",
+        "observed_manifest_sha256_prefix": "56671c2ab938",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.5/manifests/9b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 6600000000,
+        "download_bytes_upper_bound": 7657750528,
+        "estimated_peak_unified_memory_bytes": 10737418240,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-5-27b-q4-k-m",
+      "ollama_tag": "qwen3.5:27b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 27,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.5:27b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.5/tags",
+        "observed_manifest_sha256_prefix": "64ae5b1d651f",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.5/manifests/27b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 17000000000,
+        "download_bytes_upper_bound": 19617808384,
+        "estimated_peak_unified_memory_bytes": 24696061952,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-5-35b-a3b-q4-k-m",
+      "ollama_tag": "qwen3.5:35b-a3b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 35,
+      "active_parameters_billion": 3,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.5:35b-a3b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.5/tags",
+        "observed_manifest_sha256_prefix": "72aac7c28be8",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.5/manifests/35b-a3b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 22000000000,
+        "download_bytes_upper_bound": 25367150592,
+        "estimated_peak_unified_memory_bytes": 31138512896,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "qwen3-6-27b-q4-k-m",
+      "ollama_tag": "qwen3.6:27b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.6",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 27,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.6:27b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.6/tags",
+        "observed_manifest_sha256_prefix": "3a40c32f1450",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.6/manifests/27b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 17000000000,
+        "download_bytes_upper_bound": 19617808384,
+        "estimated_peak_unified_memory_bytes": 24696061952,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "qwen3-6-35b-a3b-q4-k-m",
+      "ollama_tag": "qwen3.6:35b-a3b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.6",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 35,
+      "active_parameters_billion": 3,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.6:35b-a3b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.6/tags",
+        "observed_manifest_sha256_prefix": "07d35212591f",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.6/manifests/35b-a3b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 24000000000,
+        "download_bytes_upper_bound": 27667726336,
+        "estimated_peak_unified_memory_bytes": 32212254720,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "qwen3-8-27b-q4-k-m",
+      "ollama_tag": "qwen3.8:27b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.8",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 27,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.8:27b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.8/tags",
+        "observed_manifest_sha256_prefix": "25b843619e94",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.8/manifests/27b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 18000000000,
+        "download_bytes_upper_bound": 20768096256,
+        "estimated_peak_unified_memory_bytes": 26843545600,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "gemma4-e2b-it-q4-k-m",
+      "ollama_tag": "gemma4:e2b-it-q4_K_M",
+      "publisher": "Google",
+      "family": "gemma4",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": null,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma4:e2b-it-q4_K_M",
+        "tags_url": "https://ollama.com/library/gemma4/tags",
+        "observed_manifest_sha256_prefix": "b37049369adf",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma4/manifests/e2b-it-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 4600000000,
+        "download_bytes_upper_bound": 5357174784,
+        "estimated_peak_unified_memory_bytes": 8589934592,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "E2B/E4B are effective-parameter labels; total parameter count is intentionally unspecified."
+      ]
+    },
+    {
+      "id": "gemma4-e4b-it-q4-k-m",
+      "ollama_tag": "gemma4:e4b-it-q4_K_M",
+      "publisher": "Google",
+      "family": "gemma4",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": null,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma4:e4b-it-q4_K_M",
+        "tags_url": "https://ollama.com/library/gemma4/tags",
+        "observed_manifest_sha256_prefix": "dc35e8d9c606",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma4/manifests/e4b-it-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 6600000000,
+        "download_bytes_upper_bound": 7657750528,
+        "estimated_peak_unified_memory_bytes": 11811160064,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "E2B/E4B are effective-parameter labels; total parameter count is intentionally unspecified."
+      ]
+    },
+    {
+      "id": "gemma4-12b-it-q4-k-m",
+      "ollama_tag": "gemma4:12b-it-q4_K_M",
+      "publisher": "Google",
+      "family": "gemma4",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 12,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma4:12b-it-q4_K_M",
+        "tags_url": "https://ollama.com/library/gemma4/tags",
+        "observed_manifest_sha256_prefix": "6114515d63c1",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma4/manifests/12b-it-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 8000000000,
+        "download_bytes_upper_bound": 9267314688,
+        "estimated_peak_unified_memory_bytes": 13958643712,
+        "minimum_physical_memory_bytes": 34359738368,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "gemma4-26b-a4b-it-q4-k-m",
+      "ollama_tag": "gemma4:26b-a4b-it-q4_K_M",
+      "publisher": "Google",
+      "family": "gemma4",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 26,
+      "active_parameters_billion": 4,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma4:26b-a4b-it-q4_K_M",
+        "tags_url": "https://ollama.com/library/gemma4/tags",
+        "observed_manifest_sha256_prefix": "5571076f3d70",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma4/manifests/26b-a4b-it-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 18000000000,
+        "download_bytes_upper_bound": 20768096256,
+        "estimated_peak_unified_memory_bytes": 26843545600,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "gemma4-31b-it-q4-k-m",
+      "ollama_tag": "gemma4:31b-it-q4_K_M",
+      "publisher": "Google",
+      "family": "gemma4",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 31,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gemma4:31b-it-q4_K_M",
+        "tags_url": "https://ollama.com/library/gemma4/tags",
+        "observed_manifest_sha256_prefix": "17ba34c06c80",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gemma4/manifests/31b-it-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 20000000000,
+        "download_bytes_upper_bound": 23067623424,
+        "estimated_peak_unified_memory_bytes": 28991029248,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "bonsai-2-2b",
+      "ollama_tag": "bonsai-2:2b",
+      "publisher": "Prism ML",
+      "family": "bonsai-2",
+      "selection_group": "experimental",
+      "task": "general",
+      "enabled": false,
+      "disabled_reason": "New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling.",
+      "parameters_billion": 2,
+      "active_parameters_billion": null,
+      "quantization": "UNKNOWN_FILE_TYPE_41",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "blocked",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/bonsai-2:2b",
+        "tags_url": "https://ollama.com/library/bonsai-2/tags",
+        "observed_manifest_sha256_prefix": "de2ccb4e7328",
+        "manifest_url": "https://registry.ollama.ai/v2/library/bonsai-2/manifests/2b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 911000000,
+        "download_bytes_upper_bound": 1115684864,
+        "estimated_peak_unified_memory_bytes": 5368709120,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Published ternary file size is not a prediction of runtime memory; kernels may expand weights."
+      ]
+    },
+    {
+      "id": "bonsai-2-4b",
+      "ollama_tag": "bonsai-2:4b",
+      "publisher": "Prism ML",
+      "family": "bonsai-2",
+      "selection_group": "experimental",
+      "task": "general",
+      "enabled": false,
+      "disabled_reason": "New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling.",
+      "parameters_billion": 4,
+      "active_parameters_billion": null,
+      "quantization": "UNKNOWN_FILE_TYPE_41",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "blocked",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/bonsai-2:4b",
+        "tags_url": "https://ollama.com/library/bonsai-2/tags",
+        "observed_manifest_sha256_prefix": "93edd652c932",
+        "manifest_url": "https://registry.ollama.ai/v2/library/bonsai-2/manifests/4b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 1600000000,
+        "download_bytes_upper_bound": 1907359744,
+        "estimated_peak_unified_memory_bytes": 7516192768,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Published ternary file size is not a prediction of runtime memory; kernels may expand weights."
+      ]
+    },
+    {
+      "id": "bonsai-2-9b",
+      "ollama_tag": "bonsai-2:9b",
+      "publisher": "Prism ML",
+      "family": "bonsai-2",
+      "selection_group": "experimental",
+      "task": "general",
+      "enabled": false,
+      "disabled_reason": "New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling.",
+      "parameters_billion": 9,
+      "active_parameters_billion": null,
+      "quantization": "UNKNOWN_FILE_TYPE_41",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "blocked",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/bonsai-2:9b",
+        "tags_url": "https://ollama.com/library/bonsai-2/tags",
+        "observed_manifest_sha256_prefix": "c8b5462f8688",
+        "manifest_url": "https://registry.ollama.ai/v2/library/bonsai-2/manifests/9b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 3200000000,
+        "download_bytes_upper_bound": 3747610624,
+        "estimated_peak_unified_memory_bytes": 11811160064,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Published ternary file size is not a prediction of runtime memory; kernels may expand weights."
+      ]
+    },
+    {
+      "id": "bonsai-2-27b",
+      "ollama_tag": "bonsai-2:27b",
+      "publisher": "Prism ML",
+      "family": "bonsai-2",
+      "selection_group": "experimental",
+      "task": "general",
+      "enabled": false,
+      "disabled_reason": "New ternary GGUF file type 41 is not identified by the registry UI; confirm installed Ollama/Metal support before enabling.",
+      "parameters_billion": 27,
+      "active_parameters_billion": null,
+      "quantization": "UNKNOWN_FILE_TYPE_41",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "blocked",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/bonsai-2:27b",
+        "tags_url": "https://ollama.com/library/bonsai-2/tags",
+        "observed_manifest_sha256_prefix": "f3c4f4208659",
+        "manifest_url": "https://registry.ollama.ai/v2/library/bonsai-2/manifests/27b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 8300000000,
+        "download_bytes_upper_bound": 9612296192,
+        "estimated_peak_unified_memory_bytes": 23622320128,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Published ternary file size is not a prediction of runtime memory; kernels may expand weights."
+      ]
+    },
+    {
+      "id": "ministral-3-3b-instruct-2512-q4-k-m",
+      "ollama_tag": "ministral-3:3b-instruct-2512-q4_K_M",
+      "publisher": "Mistral",
+      "family": "ministral-3",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 3,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/ministral-3:3b-instruct-2512-q4_K_M",
+        "tags_url": "https://ollama.com/library/ministral-3/tags",
+        "observed_manifest_sha256_prefix": "f04aa1c738f6",
+        "manifest_url": "https://registry.ollama.ai/v2/library/ministral-3/manifests/3b-instruct-2512-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 3000000000,
+        "download_bytes_upper_bound": 3517972480,
+        "estimated_peak_unified_memory_bytes": 5905580032,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "ministral-3-8b-instruct-2512-q4-k-m",
+      "ollama_tag": "ministral-3:8b-instruct-2512-q4_K_M",
+      "publisher": "Mistral",
+      "family": "ministral-3",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 8,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/ministral-3:8b-instruct-2512-q4_K_M",
+        "tags_url": "https://ollama.com/library/ministral-3/tags",
+        "observed_manifest_sha256_prefix": "1922accd5827",
+        "manifest_url": "https://registry.ollama.ai/v2/library/ministral-3/manifests/8b-instruct-2512-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 6000000000,
+        "download_bytes_upper_bound": 6967787520,
+        "estimated_peak_unified_memory_bytes": 9663676416,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "ministral-3-14b",
+      "ollama_tag": "ministral-3:14b",
+      "publisher": "Mistral",
+      "family": "ministral-3",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 14,
+      "active_parameters_billion": null,
+      "quantization": null,
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/ministral-3:14b",
+        "tags_url": "https://ollama.com/library/ministral-3/tags",
+        "observed_manifest_sha256_prefix": "4760c35aeb9d",
+        "manifest_url": "https://registry.ollama.ai/v2/library/ministral-3/manifests/14b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 9100000000,
+        "download_bytes_upper_bound": 10532945920,
+        "estimated_peak_unified_memory_bytes": 15032385536,
+        "minimum_physical_memory_bytes": 34359738368,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Quantization was not independently verified; inspect the resolved artifact and record the actual value."
+      ]
+    },
+    {
+      "id": "granite4-2-3b-q4-k-m",
+      "ollama_tag": "granite4.2:3b-q4_K_M",
+      "publisher": "IBM",
+      "family": "granite4.2",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 3,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/granite4.2:3b-q4_K_M",
+        "tags_url": "https://ollama.com/library/granite4.2/tags",
+        "observed_manifest_sha256_prefix": "40577dc168a3",
+        "manifest_url": "https://registry.ollama.ai/v2/library/granite4.2/manifests/3b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 2200000000,
+        "download_bytes_upper_bound": 2597322752,
+        "estimated_peak_unified_memory_bytes": 4831838208,
+        "minimum_physical_memory_bytes": 17179869184,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "granite4-2-8b-q4-k-m",
+      "ollama_tag": "granite4.2:8b-q4_K_M",
+      "publisher": "IBM",
+      "family": "granite4.2",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 8,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/granite4.2:8b-q4_K_M",
+        "tags_url": "https://ollama.com/library/granite4.2/tags",
+        "observed_manifest_sha256_prefix": "f586c02fdecd",
+        "manifest_url": "https://registry.ollama.ai/v2/library/granite4.2/manifests/8b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 5300000000,
+        "download_bytes_upper_bound": 6162481152,
+        "estimated_peak_unified_memory_bytes": 8589934592,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "granite4-2-30b-q4-k-m",
+      "ollama_tag": "granite4.2:30b-q4_K_M",
+      "publisher": "IBM",
+      "family": "granite4.2",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 30,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/granite4.2:30b-q4_K_M",
+        "tags_url": "https://ollama.com/library/granite4.2/tags",
+        "observed_manifest_sha256_prefix": "be22829aa92a",
+        "manifest_url": "https://registry.ollama.ai/v2/library/granite4.2/manifests/30b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 18000000000,
+        "download_bytes_upper_bound": 20768096256,
+        "estimated_peak_unified_memory_bytes": 26843545600,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "lfm2-5-8b-a1b-q4-k-m",
+      "ollama_tag": "lfm2.5:8b-a1b-q4_K_M",
+      "publisher": "Liquid AI",
+      "family": "lfm2.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 8,
+      "active_parameters_billion": 1,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/lfm2.5:8b-a1b-q4_K_M",
+        "tags_url": "https://ollama.com/library/lfm2.5/tags",
+        "observed_manifest_sha256_prefix": "9cf756159fc2",
+        "manifest_url": "https://registry.ollama.ai/v2/library/lfm2.5/manifests/8b-a1b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 5200000000,
+        "download_bytes_upper_bound": 6047137792,
+        "estimated_peak_unified_memory_bytes": 8589934592,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "lfm2-5-24b-a2b-q4-k-m",
+      "ollama_tag": "lfm2.5:24b-a2b-q4_K_M",
+      "publisher": "Liquid AI",
+      "family": "lfm2.5",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 24,
+      "active_parameters_billion": 2,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/lfm2.5:24b-a2b-q4_K_M",
+        "tags_url": "https://ollama.com/library/lfm2.5/tags",
+        "observed_manifest_sha256_prefix": "00a755688d0f",
+        "manifest_url": "https://registry.ollama.ai/v2/library/lfm2.5/manifests/24b-a2b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 15000000000,
+        "download_bytes_upper_bound": 17317232640,
+        "estimated_peak_unified_memory_bytes": 22548578304,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "gpt-oss-20b",
+      "ollama_tag": "gpt-oss:20b",
+      "publisher": "OpenAI",
+      "family": "gpt-oss",
+      "selection_group": "current",
+      "task": "reasoning",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 20.9,
+      "active_parameters_billion": 3.6,
+      "quantization": "MXFP4",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gpt-oss:20b",
+        "tags_url": "https://ollama.com/library/gpt-oss/tags",
+        "observed_manifest_sha256_prefix": "f38aa0c53da5",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gpt-oss/manifests/20b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 14000000000,
+        "download_bytes_upper_bound": 16167993344,
+        "estimated_peak_unified_memory_bytes": 20401094656,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters.",
+        "Preserve the model's reasoning format; record reasoning effort and count generated thinking tokens."
+      ]
+    },
+    {
+      "id": "gpt-oss-120b",
+      "ollama_tag": "gpt-oss:120b",
+      "publisher": "OpenAI",
+      "family": "gpt-oss",
+      "selection_group": "large_host",
+      "task": "reasoning",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 120,
+      "active_parameters_billion": null,
+      "quantization": "MXFP4",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/gpt-oss:120b",
+        "tags_url": "https://ollama.com/library/gpt-oss/tags",
+        "observed_manifest_sha256_prefix": "714d86958b6e",
+        "manifest_url": "https://registry.ollama.ai/v2/library/gpt-oss/manifests/120b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 65000000000,
+        "download_bytes_upper_bound": 74817994752,
+        "estimated_peak_unified_memory_bytes": 88046829568,
+        "minimum_physical_memory_bytes": 206158430208,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Preserve the model's reasoning format; record reasoning effort and count generated thinking tokens."
+      ]
+    },
+    {
+      "id": "qwen3-coder-30b-a3b-q4-k-m",
+      "ollama_tag": "qwen3-coder:30b-a3b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3-coder",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 30.5,
+      "active_parameters_billion": 3.3,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3-coder:30b-a3b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3-coder/tags",
+        "observed_manifest_sha256_prefix": "06c1097efce0",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3-coder/manifests/30b-a3b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 19000000000,
+        "download_bytes_upper_bound": 21917335552,
+        "estimated_peak_unified_memory_bytes": 26843545600,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "qwen3-coder-next-q4-k-m",
+      "ollama_tag": "qwen3-coder-next:q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3-coder-next",
+      "selection_group": "large_host",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": null,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3-coder-next:q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3-coder-next/tags",
+        "observed_manifest_sha256_prefix": "ca06e9e4087c",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3-coder-next/manifests/q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 52000000000,
+        "download_bytes_upper_bound": 59867398144,
+        "estimated_peak_unified_memory_bytes": 70866960384,
+        "minimum_physical_memory_bytes": 206158430208,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "devstral-small-2-24b-instruct-2512-q4-k-m",
+      "ollama_tag": "devstral-small-2:24b-instruct-2512-q4_K_M",
+      "publisher": "Mistral",
+      "family": "devstral-small-2",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 24,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/devstral-small-2:24b-instruct-2512-q4_K_M",
+        "tags_url": "https://ollama.com/library/devstral-small-2/tags",
+        "observed_manifest_sha256_prefix": "24277f07f62d",
+        "manifest_url": "https://registry.ollama.ai/v2/library/devstral-small-2/manifests/24b-instruct-2512-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 15000000000,
+        "download_bytes_upper_bound": 17317232640,
+        "estimated_peak_unified_memory_bytes": 23622320128,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "mistral-small3-2-24b",
+      "ollama_tag": "mistral-small3.2:24b",
+      "publisher": "Mistral",
+      "family": "mistral-small3.2",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 24,
+      "active_parameters_billion": null,
+      "quantization": null,
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/mistral-small3.2:24b",
+        "tags_url": "https://ollama.com/library/mistral-small3.2/tags",
+        "observed_manifest_sha256_prefix": "5a408ab55df5",
+        "manifest_url": "https://registry.ollama.ai/v2/library/mistral-small3.2/manifests/24b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 15000000000,
+        "download_bytes_upper_bound": 17317232640,
+        "estimated_peak_unified_memory_bytes": 23622320128,
+        "minimum_physical_memory_bytes": 51539607552,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Quantization was not independently verified; inspect the resolved artifact and record the actual value."
+      ]
+    },
+    {
+      "id": "olmo-3-1-32b-instruct-q4-k-m",
+      "ollama_tag": "olmo-3.1:32b-instruct-q4_K_M",
+      "publisher": "Allen Institute for AI",
+      "family": "olmo-3.1",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 32,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/olmo-3.1:32b-instruct-q4_K_M",
+        "tags_url": "https://ollama.com/library/olmo-3.1/tags",
+        "observed_manifest_sha256_prefix": "a16b6a5be6cf",
+        "manifest_url": "https://registry.ollama.ai/v2/library/olmo-3.1/manifests/32b-instruct-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 19000000000,
+        "download_bytes_upper_bound": 21917335552,
+        "estimated_peak_unified_memory_bytes": 27917287424,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "olmo-3-1-32b-think-q4-k-m",
+      "ollama_tag": "olmo-3.1:32b-think-q4_K_M",
+      "publisher": "Allen Institute for AI",
+      "family": "olmo-3.1",
+      "selection_group": "current",
+      "task": "reasoning",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 32,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/olmo-3.1:32b-think-q4_K_M",
+        "tags_url": "https://ollama.com/library/olmo-3.1/tags",
+        "observed_manifest_sha256_prefix": "223d4ec84d91",
+        "manifest_url": "https://registry.ollama.ai/v2/library/olmo-3.1/manifests/32b-think-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 19000000000,
+        "download_bytes_upper_bound": 21917335552,
+        "estimated_peak_unified_memory_bytes": 27917287424,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "north-mini-code-1-0-q4-k-m",
+      "ollama_tag": "north-mini-code-1.0:q4_K_M",
+      "publisher": "Cohere",
+      "family": "north-mini-code-1.0",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 30,
+      "active_parameters_billion": 3,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/north-mini-code-1.0:q4_K_M",
+        "tags_url": "https://ollama.com/library/north-mini-code-1.0/tags",
+        "observed_manifest_sha256_prefix": "d8b269ad5c7c",
+        "manifest_url": "https://registry.ollama.ai/v2/library/north-mini-code-1.0/manifests/q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 19000000000,
+        "download_bytes_upper_bound": 21917335552,
+        "estimated_peak_unified_memory_bytes": 27917287424,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "muse-glimmer-30b-q4-k-m",
+      "ollama_tag": "muse-glimmer:30b-q4_K_M",
+      "publisher": "Meta",
+      "family": "muse-glimmer",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 30,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/muse-glimmer:30b-q4_K_M",
+        "tags_url": "https://ollama.com/library/muse-glimmer/tags",
+        "observed_manifest_sha256_prefix": "de878ce33ad8",
+        "manifest_url": "https://registry.ollama.ai/v2/library/muse-glimmer/manifests/30b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 18000000000,
+        "download_bytes_upper_bound": 20768096256,
+        "estimated_peak_unified_memory_bytes": 26843545600,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "laguna-xs-2-1-q4-k-m",
+      "ollama_tag": "laguna-xs-2.1:q4_K_M",
+      "publisher": "Poolside",
+      "family": "laguna-xs-2.1",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": false,
+      "disabled_reason": "Upstream reports an unresolved macOS issue; recheck the model page before enabling.",
+      "parameters_billion": 33,
+      "active_parameters_billion": 3,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "blocked",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/laguna-xs-2.1:q4_K_M",
+        "tags_url": "https://ollama.com/library/laguna-xs-2.1/tags",
+        "observed_manifest_sha256_prefix": "0175be1e57f4",
+        "manifest_url": "https://registry.ollama.ai/v2/library/laguna-xs-2.1/manifests/q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 20000000000,
+        "download_bytes_upper_bound": 23067623424,
+        "estimated_peak_unified_memory_bytes": 28991029248,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "nemotron-3-5-lightning-30b-a3b-q4-k-m",
+      "ollama_tag": "nemotron-3.5-lightning:30b-a3b-q4_K_M",
+      "publisher": "NVIDIA",
+      "family": "nemotron-3.5-lightning",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 30,
+      "active_parameters_billion": 3,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/nemotron-3.5-lightning:30b-a3b-q4_K_M",
+        "tags_url": "https://ollama.com/library/nemotron-3.5-lightning/tags",
+        "observed_manifest_sha256_prefix": "e7a64ff15fb1",
+        "manifest_url": "https://registry.ollama.ai/v2/library/nemotron-3.5-lightning/manifests/30b-a3b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 25000000000,
+        "download_bytes_upper_bound": 28818014208,
+        "estimated_peak_unified_memory_bytes": 35433480192,
+        "minimum_physical_memory_bytes": 103079215104,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "nemotron-3-5-bolt-74b-a9b-iq2",
+      "ollama_tag": "nemotron-3.5-bolt:74b-a9b-iq2",
+      "publisher": "NVIDIA",
+      "family": "nemotron-3.5-bolt",
+      "selection_group": "current",
+      "task": "general",
+      "enabled": false,
+      "disabled_reason": "Published mixed IQ2_XXS/NVFP4 artifact does not support Apple Silicon / Metal.",
+      "parameters_billion": 74,
+      "active_parameters_billion": 9,
+      "quantization": "IQ2_XXS_MIXED",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "cuda",
+        "status": "blocked",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/nemotron-3.5-bolt:74b-a9b-iq2",
+        "tags_url": "https://ollama.com/library/nemotron-3.5-bolt/tags",
+        "observed_manifest_sha256_prefix": "d6d3deeca271",
+        "manifest_url": "https://registry.ollama.ai/v2/library/nemotron-3.5-bolt/manifests/74b-a9b-iq2"
+      },
+      "resources": {
+        "published_download_bytes_approx": 25000000000,
+        "download_bytes_upper_bound": 28818014208,
+        "estimated_peak_unified_memory_bytes": 38654705664,
+        "minimum_physical_memory_bytes": 103079215104,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "nemotron-3-5-super-120b-a12b-q4-k-m",
+      "ollama_tag": "nemotron-3.5-super:120b-a12b-q4_K_M",
+      "publisher": "NVIDIA",
+      "family": "nemotron-3.5-super",
+      "selection_group": "large_host",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 120,
+      "active_parameters_billion": 12,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/nemotron-3.5-super:120b-a12b-q4_K_M",
+        "tags_url": "https://ollama.com/library/nemotron-3.5-super/tags",
+        "observed_manifest_sha256_prefix": "8a58f3e60082",
+        "manifest_url": "https://registry.ollama.ai/v2/library/nemotron-3.5-super/manifests/120b-a12b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 90000000000,
+        "download_bytes_upper_bound": 103567851520,
+        "estimated_peak_unified_memory_bytes": 123480309760,
+        "minimum_physical_memory_bytes": 274877906944,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "ornith-1-5-9b",
+      "ollama_tag": "ornith-1.5:9b",
+      "publisher": "Ornith",
+      "family": "ornith-1.5",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 8.95,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/ornith-1.5:9b",
+        "tags_url": "https://ollama.com/library/ornith-1.5/tags",
+        "observed_manifest_sha256_prefix": "e5df7dcdd8a2",
+        "manifest_url": "https://registry.ollama.ai/v2/library/ornith-1.5/manifests/9b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 6600000000,
+        "download_bytes_upper_bound": 7657750528,
+        "estimated_peak_unified_memory_bytes": 10737418240,
+        "minimum_physical_memory_bytes": 25769803776,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "9B/35B released 2026-08-19; 122B released 2026-10-20 according to the model changelog."
+      ]
+    },
+    {
+      "id": "ornith-1-5-35b",
+      "ollama_tag": "ornith-1.5:35b",
+      "publisher": "Ornith",
+      "family": "ornith-1.5",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 35,
+      "active_parameters_billion": 3,
+      "quantization": null,
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/ornith-1.5:35b",
+        "tags_url": "https://ollama.com/library/ornith-1.5/tags",
+        "observed_manifest_sha256_prefix": "9f3b89b25219",
+        "manifest_url": "https://registry.ollama.ai/v2/library/ornith-1.5/manifests/35b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 23000000000,
+        "download_bytes_upper_bound": 26517438464,
+        "estimated_peak_unified_memory_bytes": 32212254720,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters.",
+        "Quantization was not independently verified; inspect the resolved artifact and record the actual value.",
+        "9B/35B released 2026-08-19; 122B released 2026-10-20 according to the model changelog."
+      ]
+    },
+    {
+      "id": "ornith-1-5-122b-q4-k-m",
+      "ollama_tag": "ornith-1.5:122b-q4_K_M",
+      "publisher": "Ornith",
+      "family": "ornith-1.5",
+      "selection_group": "large_host",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 122,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/ornith-1.5:122b-q4_K_M",
+        "tags_url": "https://ollama.com/library/ornith-1.5/tags",
+        "observed_manifest_sha256_prefix": "f1e64af05b7d",
+        "manifest_url": "https://registry.ollama.ai/v2/library/ornith-1.5/manifests/122b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 77000000000,
+        "download_bytes_upper_bound": 88617254912,
+        "estimated_peak_unified_memory_bytes": 106300440576,
+        "minimum_physical_memory_bytes": 274877906944,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "9B/35B released 2026-08-19; 122B released 2026-10-20 according to the model changelog."
+      ]
+    },
+    {
+      "id": "qwen3-8-flash-next-125b-a6b-q4-k-m",
+      "ollama_tag": "qwen3.8-flash-next:125b-a6b-q4_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3.8-flash-next",
+      "selection_group": "large_host",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 125,
+      "active_parameters_billion": 6,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text",
+        "image"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/qwen3.8-flash-next:125b-a6b-q4_K_M",
+        "tags_url": "https://ollama.com/library/qwen3.8-flash-next/tags",
+        "observed_manifest_sha256_prefix": "f79436a1cc83",
+        "manifest_url": "https://registry.ollama.ai/v2/library/qwen3.8-flash-next/manifests/125b-a6b-q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 120000000000,
+        "download_bytes_upper_bound": 138068099072,
+        "estimated_peak_unified_memory_bytes": 163208757248,
+        "minimum_physical_memory_bytes": 412316860416,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "llama3-3-70b",
+      "ollama_tag": "llama3.3:70b",
+      "publisher": "Meta",
+      "family": "llama3.3",
+      "selection_group": "baseline",
+      "task": "general",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 70,
+      "active_parameters_billion": null,
+      "quantization": null,
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/llama3.3:70b",
+        "tags_url": "https://ollama.com/library/llama3.3/tags",
+        "observed_manifest_sha256_prefix": "a6eb4748fd29",
+        "manifest_url": "https://registry.ollama.ai/v2/library/llama3.3/manifests/70b"
+      },
+      "resources": {
+        "published_download_bytes_approx": 43000000000,
+        "download_bytes_upper_bound": 49517953024,
+        "estimated_peak_unified_memory_bytes": 60129542144,
+        "minimum_physical_memory_bytes": 137438953472,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Quantization was not independently verified; inspect the resolved artifact and record the actual value."
+      ]
+    },
+    {
+      "id": "glm-4-7-flash-q4-k-m",
+      "ollama_tag": "glm-4.7-flash:q4_K_M",
+      "publisher": "Z.ai",
+      "family": "glm-4.7-flash",
+      "selection_group": "current",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 30,
+      "active_parameters_billion": null,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/glm-4.7-flash:q4_K_M",
+        "tags_url": "https://ollama.com/library/glm-4.7-flash/tags",
+        "observed_manifest_sha256_prefix": "4475827791a2",
+        "manifest_url": "https://registry.ollama.ai/v2/library/glm-4.7-flash/manifests/q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 19000000000,
+        "download_bytes_upper_bound": 21917335552,
+        "estimated_peak_unified_memory_bytes": 27917287424,
+        "minimum_physical_memory_bytes": 68719476736,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": []
+    },
+    {
+      "id": "laguna-s-2-1-q4-k-m",
+      "ollama_tag": "laguna-s-2.1:q4_K_M",
+      "publisher": "Poolside",
+      "family": "laguna-s-2.1",
+      "selection_group": "large_host",
+      "task": "coding",
+      "enabled": true,
+      "disabled_reason": null,
+      "parameters_billion": 118,
+      "active_parameters_billion": 8,
+      "quantization": "Q4_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-21",
+        "source_url": "https://ollama.com/library/laguna-s-2.1:q4_K_M",
+        "tags_url": "https://ollama.com/library/laguna-s-2.1/tags",
+        "observed_manifest_sha256_prefix": "1adabf138c90",
+        "manifest_url": "https://registry.ollama.ai/v2/library/laguna-s-2.1/manifests/q4_K_M"
+      },
+      "resources": {
+        "published_download_bytes_approx": 96000000000,
+        "download_bytes_upper_bound": 110467481600,
+        "estimated_peak_unified_memory_bytes": 130996502528,
+        "minimum_physical_memory_bytes": 274877906944,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Memory estimates cover all experts, not only active parameters."
+      ]
+    }
+  ],
+  "excluded_families": [
+    {
+      "family": "deepseek-v4.1-flash",
+      "reason_code": "only_cloud_tags_in_official_ollama_library",
+      "source_url": "https://ollama.com/library/deepseek-v4.1-flash/tags",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "family": "glm-5.3",
+      "reason_code": "only_cloud_tags_in_official_ollama_library",
+      "source_url": "https://ollama.com/library/glm-5.3/tags",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "family": "glm-5.3-flash",
+      "reason_code": "only_cloud_tags_in_official_ollama_library",
+      "source_url": "https://ollama.com/library/glm-5.3-flash/tags",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "family": "kimi-k3",
+      "reason_code": "only_cloud_tags_in_official_ollama_library",
+      "source_url": "https://ollama.com/library/kimi-k3/tags",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "family": "minimax-m3.1-flash",
+      "reason_code": "only_cloud_tags_in_official_ollama_library",
+      "source_url": "https://ollama.com/library/minimax-m3.1-flash/tags",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "family": "mistral-large-4",
+      "reason_code": "only_cloud_tags_in_official_ollama_library",
+      "source_url": "https://ollama.com/library/mistral-large-4/tags",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "family": "embedding, speech, image-generation and decision-only families",
+      "reason_code": "outside_phase_1_text_generation_benchmark",
+      "source_url": "https://ollama.com/library?sort=newest",
+      "verified_on": "2026-10-21"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ollama.com/library?sort=newest",
+      "purpose": "Current family discovery"
+    },
+    {
+      "url": "https://docs.ollama.com/context-length",
+      "purpose": "Context size affects memory; pin rather than inherit defaults"
+    },
+    {
+      "url": "https://docs.ollama.com/faq",
+      "purpose": "Server parallelism, cache type, model storage, environment and unload behavior"
+    },
+    {
+      "url": "https://docs.ollama.com/api/ps",
+      "purpose": "Loaded model allocation and actual context metadata; CLI equivalent is ollama ps"
+    },
+    {
+      "url": "https://ollama.com/library/nemotron-3.5-bolt:74b-a9b-iq2",
+      "purpose": "Explicit lack of Apple Silicon / Metal support"
+    },
+    {
+      "url": "https://ollama.com/library/laguna-xs-2.1",
+      "purpose": "Upstream macOS issue"
+    }
+  ]
+}
