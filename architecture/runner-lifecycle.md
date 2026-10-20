@@ -59,6 +59,24 @@ Only completed model records with all expected measured requests, usable timing 
 
 History from before measurement signatures were introduced is checked against recorded options, prompts and complete profiles. New reports additionally fingerprint the full benchmark configuration. Resume is not an engine-version comparison: preserved results may come from an earlier Ollama version. Use `--fresh` to remeasure after engine changes or to obtain an entirely new snapshot.
 
+### Download Concurrency Experiment
+
+Keep network experiments separate from the benchmark runner. After the benchmark finishes or is stopped, run:
+
+```sh
+bash scripts/test-download-concurrency.sh --dry-run
+bash scripts/test-download-concurrency.sh
+TARGET_PERCENT=10 MAX_SECONDS=180 bash scripts/test-download-concurrency.sh
+```
+
+The standalone Bash script requires Ollama, curl, jq and lsof. It sweeps **1, 2, 4 and 6 simultaneous downloads**, using the first N tags from a six-model pool. Defaults are six distinct enabled models with approximately 4.6–6 GB of weights; optionally pass six exact enabled catalog tags as positional arguments. Each trial uses a fresh owned store/server on port 11436 and stops after approximately 5% (configurable to 10%) of the participating models' combined published sizes has been observed. The sample follows the largest reported layer for each pull; small metadata or auxiliary layers are not treated as weight progress. Sampling is once per second and uses approximate catalog sizes, so the stopping point can overshoot. No model is loaded and no inference is performed. These disposable weights are not used as verified benchmark inputs. The default per-level timeout is 300 seconds; larger aggregate samples at six downloads may take longer even when aggregate throughput is unchanged.
+
+The script stops only its own curl clients and daemon, removes partial downloads on normal exit/interrupt, and refuses an occupied test port or an active benchmark server on port 11435. `MODELS_FILE`, `WORK_ROOT` and `PORT` can override defaults. SIGKILL/power loss cannot run shell cleanup; inspect any remaining `download-test.*` workspace before removing it.
+
+Before each concurrency level, reserve its full combined catalog upper bounds multiplied by the staging allowance, even though only a fraction should be downloaded. Levels that do not fit are explicitly skipped; lower safe levels can still run. Existing files, including any model store already on the volume, are excluded from actual free disk by the filesystem. Require that reservation plus `max(10 GiB, catalog reserve bytes, catalog volume fraction)`, preserving the existing stronger 20 GiB/10% reserve. Recheck free disk, bounded log sizes and store growth while sampling. No installer or inference runs in this experiment; it is not a substitute for the Python runner's RAM/pressure watchdog.
+
+The TSV summary shows concurrency, status, observed payload bytes, seconds and aggregate MB/s, followed by speedup relative to a single download. It reports the fastest level and a provisional sweet spot: the lowest tested concurrency within 5% of peak throughput. Failed/stalled samples are inconclusive rather than successful zero-speed measurements. Results include request setup/handshake time and omit unreported bytes. Different levels use different-sized subsets of the pool, so this is a rough bytes-normalized bandwidth sweep, not a matched-workload controlled experiment. Remote CDN caches, trial order, model mix, network variability and Ollama's own multipart downloading can influence the result. Repeat with larger distinct models and compare errors as well as throughput; a flat curve alone cannot establish a server/IP cap. Production download pairs use the measured two-download sweet spot; background transfers during inference and multiple resident models remain disabled.
+
 Publish highlights and add a link to the results index after a measured run:
 
 ```sh
