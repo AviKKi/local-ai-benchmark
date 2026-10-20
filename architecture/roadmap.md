@@ -16,13 +16,26 @@ Status: model catalog, modular Python runner, progress UI and JSON/Markdown repo
 
 MLX and other inference engines, concurrent request batches, non-macOS hosts, Intel Macs, speech, embeddings, decision-only models and image generation are outside Phase 1.
 
+## Phase 2
+
+Status: requirements gathering; additional requirements will be added later. Phase 1 execution and measurements remain unchanged.
+
+### Requirement: Parallel Requests and Server Capacity
+
+- Keep the single-request and sequential multi-request profiles as concurrency-one baselines.
+- Test one resident model with explicit client and server concurrency levels, initially 1, 2, 4 and 8 simultaneous requests, admitting each level independently when resources permit.
+- Budget additional per-request context/KV cache and runtime workspace before increasing concurrency; retain memory-pressure, swap, disk, timeout and owned-process cleanup safeguards.
+- Verify that requests actually overlap in server execution rather than only accumulating in a queue. Distinguish synchronized request bursts from sustained concurrent-client load.
+- Report aggregate generated tokens divided by workload elapsed wall time, completed requests per second, per-request decoding throughput, time to first token, p50/p95 latency, errors and peak resource usage.
+- Use enough measured requests to characterize sustained serving performance, record workload size and settings, and identify throughput/latency tradeoffs rather than assuming linear scaling.
+- Select and validate a request transport with concurrent execution and streaming timing support before implementation; do not assume the current serial CLI process runner supports these measurements.
+
 ## Future Scope
 
 - Add friends' and family's devices for broader hardware comparisons.
 - Support Windows, Linux and Android, including platform-specific setup and resource detection.
 - Evaluate other inference engines, including MLX on supported Apple hardware.
 - Add model families such as text-to-image, speech-to-text and text-to-speech with suitable workloads and metrics.
-- Add concurrent batching with explicit memory budgets and clearly distinguished throughput measurements.
 
 Future phases have no committed schedule. Define their resource controls and methodology before expanding the benchmark scope.
 
