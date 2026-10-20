@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import signal
+import sys
 import tempfile
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -16,6 +17,7 @@ from rich.console import Console
 
 from .config import BenchmarkError, CleanupError, SafetyError, load_catalog
 from .engine import Ollama
+from .history import choose_resume, measurement_signature, read_history, reusable_measurements
 from .metrics import aggregate
 from .processes import CommandRunner, cleanup_signals
 from .prompts import PROMPTS, validate_prompts
@@ -52,6 +54,9 @@ def parser():
     result.add_argument("--work-dir", type=Path, default=Path(".benchmark-work"))
     result.add_argument("--output-dir", type=Path, default=Path("benchmarks/runs"))
     result.add_argument("--publish", action="store_true", help="Update README highlights and the benchmark index after a completed measured run")
+    mode = result.add_mutually_exclusive_group()
+    mode.add_argument("--resume", action="store_true", help="Reuse completed compatible measurements for this system; retry skipped, failed and unfinished models")
+    mode.add_argument("--fresh", action="store_true", help="Benchmark selected models again without reusing history")
     return result
 
 
@@ -107,7 +112,7 @@ def benchmark_model(engine, guard, model, record, catalog, ui, save, aliases):
         ui.event("throughput", f"{model['ollama_tag']} · {profile['id']}: {throughput:.2f} tok/s" if throughput is not None else f"{model['ollama_tag']} · {profile['id']}: timing unavailable")
 
 
-def execute(args, catalog, models, telemetry, specs, report, reports, ui, workspace):
+def execute(args, catalog, models, telemetry, specs, report, reports, ui, workspace, reusable=None):
     def event(kind, message):
         reports.event(kind, message)
         ui.event(kind, message)
@@ -117,6 +122,13 @@ def execute(args, catalog, models, telemetry, specs, report, reports, ui, worksp
     attempts = 0
     try:
         for model in models:
+            previous = (reusable or {}).get(model["ollama_tag"])
+            if previous is not None:
+                report["models"].append(previous)
+                event("reused", f"{model['ollama_tag']}: already benchmarked in {previous['reused_from']['run_id']}; no download or inference")
+                ui.finish("reused")
+                reports.save()
+                continue
             record = model_record(model, catalog)
             report["models"].append(record)
             reason = None
@@ -199,6 +211,8 @@ def run(args):
         raise BenchmarkError("--limit must be positive")
     if args.plan and args.publish:
         raise BenchmarkError("--plan cannot publish measurements")
+    if args.plan and args.resume:
+        raise BenchmarkError("--plan cannot reuse measurements; omit --resume")
     if args.device and not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9._-]*", args.device):
         raise BenchmarkError("--device must be a filesystem-safe label")
     catalog = load_catalog(args.models_file)
@@ -221,6 +235,17 @@ def run(args):
         setup_error = str(error)
     default_device = f"{specs.get('model') or 'macos-arm64'}-{specs.get('memory', {}).get('physical', 0)//1024**3}gib"
     device_id = args.device or re.sub(r"[^a-zA-Z0-9._-]", "-", default_device).lower()
+    console = Console()
+    warning = lambda message: console.print(message, markup=False)
+    history = []
+    resume = args.resume
+    if not setup_error and (args.resume or getattr(args, "prompt_for_mode", False)):
+        history = read_history(args.output_dir, specs, catalog, warning)
+        if not args.resume:
+            resume = choose_resume(history, True, sys.stdin, warning)
+    reusable = reusable_measurements(history, models, catalog, warning) if resume else {}
+    if resume:
+        warning(f"Resume: reusing {len(reusable)} completed models; remaining selected models will be checked and retried.")
     directory = args.output_dir.resolve() / device_id / run_id
     directory.mkdir(parents=True, exist_ok=False)
     report = {
@@ -228,6 +253,8 @@ def run(args):
         "plan_only": args.plan, "catalog_schema_version": catalog["schema_version"], "catalog_as_of": catalog["as_of"],
         "system_specs": specs, "ollama_version": None, "models": [],
         "benchmark_options": catalog["benchmark"]["options"],
+        "measurement_signature": measurement_signature(catalog),
+        "resume": resume,
         "prompts": [vars(prompt) for prompt in PROMPTS],
         "notes": ["No output quality evaluation; generation text is not retained.",
                   "Native model templates and default thinking behavior are retained.",
@@ -243,7 +270,7 @@ def run(args):
                 if setup_error:
                     raise SafetyError(setup_error)
                 with run_workspace(args.work_dir.resolve()) as workspace:
-                    execute(args, catalog, models, telemetry, specs, report, reports, ui, workspace)
+                    execute(args, catalog, models, telemetry, specs, report, reports, ui, workspace, reusable)
             except KeyboardInterrupt:
                 report.update(status="interrupted", error="Interrupted; owned processes and artifacts were cleaned up unless a cleanup error is reported")
                 reports.event("interrupted", "User interrupt")
@@ -264,7 +291,9 @@ def run(args):
 
 
 def main(argv=None):
-    args = parser().parse_args(argv)
+    arguments = sys.argv[1:] if argv is None else list(argv)
+    args = parser().parse_args(arguments)
+    args.prompt_for_mode = not arguments
     previous = signal.getsignal(signal.SIGTERM)
 
     def terminate(signum, frame):

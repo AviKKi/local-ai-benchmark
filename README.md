@@ -23,6 +23,13 @@ The plan checks local RAM and disk without installing or downloading anything. T
 uv run local-ai-benchmark
 ```
 
+With no arguments, an interactive terminal offers **resume** or **fresh** when compatible history exists. Resume keeps completed measurements for this hardware/OS and workload, while retrying skipped, failed and unfinished models. For explicit, non-interactive use:
+
+```sh
+uv run local-ai-benchmark --resume
+uv run local-ai-benchmark --fresh
+```
+
 Reports and logs are written to `benchmarks/runs/<device-id>/<run-id>/`. Weights, temporary aliases, installer cache and the owned server are cleaned up after each model; the Ollama installation remains available. See [runner usage](architecture/runner-lifecycle.md#commands) for model filters, plain logs, publication and verification.
 
 ## Latest Benchmarks

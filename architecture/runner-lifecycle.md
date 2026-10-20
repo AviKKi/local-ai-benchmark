@@ -25,6 +25,24 @@ uv run local-ai-benchmark --models-file models.json --work-dir /Volumes/Bench/.b
 
 Quote glob patterns so the shell does not expand them. `--limit` caps statically eligible attempts, including attempts later rejected by registry or backend checks. Disabled, incompatible and capacity-rejected models have explicit skip reasons. The Rich terminal dashboard shows model counts, the current stage, download layer progress, available memory, owned process footprint, throughput and recent events. Non-interactive terminals automatically use plain logs.
 
+### Resume or Fresh
+
+With no arguments, the runner offers resume or fresh if compatible history exists and stdin is a terminal. Enter accepts resume. With no compatible history it starts fresh. If history exists but stdin is not interactive, pass an explicit mode rather than relying on a prompt:
+
+```sh
+uv run local-ai-benchmark --resume
+uv run local-ai-benchmark --fresh
+uv run local-ai-benchmark --resume --model 'qwen3.5:*' --no-ui
+```
+
+Other explicit command-line options retain fresh-run behavior unless `--resume` is also passed. `--resume` cannot be combined with `--fresh` or `--plan`.
+
+Resume scans the output directory's compatible run history, not just the last report: a newer interrupted or limited run cannot hide older successes. Compatibility matches hardware configuration, physical RAM, architecture and OS version (not volatile available memory), benchmark settings and prompts. No serial number or hardware UUID is used, so identically configured machines sharing a results directory cannot be uniquely distinguished. Use separate output directories for such machines. Changing `--device` only changes the new report label; it does not discard matching history.
+
+Only completed model records with all expected measured requests, usable timing metrics, matching context/quantization and a manifest digest matching the current catalog prefix are reusable. Failed, skipped, interrupted, missing or incomplete models are attempted again subject to current safety checks. A resource-constrained model may consequently be skipped again. Old reports remain untouched; each resume creates a new report containing reused results with their original run provenance and model-specific Ollama version. `REUSED` events and the dashboard distinguish these from new completions and actual skips. Reused models do not consume `--limit` attempts.
+
+History from before measurement signatures were introduced is checked against recorded options, prompts and complete profiles. New reports additionally fingerprint the full benchmark configuration. Resume is not an engine-version comparison: preserved results may come from an earlier Ollama version. Use `--fresh` to remeasure after engine changes or to obtain an entirely new snapshot.
+
 Publish highlights and add a link to the results index after a measured run:
 
 ```sh
@@ -46,6 +64,7 @@ The runner requires Python 3.11 or later. `uv sync` installs the package, its CL
 | Module | Responsibility |
 | --- | --- |
 | `src/local_bench/cli.py` | Selection, exclusive run lock, orchestration, interruption and exit status |
+| `src/local_bench/history.py` | Compatible historical measurements, resume selection and result provenance |
 | `src/local_bench/config.py` | Catalog validation and fixed Modelfile settings |
 | `src/local_bench/system.py` | macOS pressure, available RAM, swap and owned physical footprints |
 | `src/local_bench/safety.py` | Memory/disk admission and watchdog |

@@ -42,7 +42,9 @@ def render_report(report):
         profiles = model.get("profiles", [])
         for profile in profiles or [{}]:
             metrics = profile.get("metrics", {})
-            lines.append(f"| {cell(model['ollama_tag'])} | {model['status']} | {cell(profile.get('id', '—'))} | {format_rate(metrics.get('generation_tokens_per_second'))} | {format_rate(metrics.get('end_to_end_tokens_per_second'))} | {cell(model.get('skip_or_failure_reason') or '')} |")
+            status = "reused" if model.get("reused_from") else model["status"]
+            reason = f"Measured in {model['reused_from']['run_id']}" if model.get("reused_from") else model.get("skip_or_failure_reason") or ""
+            lines.append(f"| {cell(model['ollama_tag'])} | {status} | {cell(profile.get('id', '—'))} | {format_rate(metrics.get('generation_tokens_per_second'))} | {format_rate(metrics.get('end_to_end_tokens_per_second'))} | {cell(reason)} |")
     if report.get("error"):
         lines += ["", "## Run Error", "", cell(report["error"])]
     lines += ["", "## System Specifications", "", "```json", json.dumps(report.get("system_specs", {}), indent=2), "```", "",

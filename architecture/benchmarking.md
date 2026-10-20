@@ -18,6 +18,8 @@ No thinking flag is passed: results explicitly record the model default and that
 
 Measure prompt evaluation and generation throughput, wall time, model load time, CPU usage, GPU usage when available, peak memory, memory pressure and swap growth. Capture system specifications alongside both single-request and sequential-batch measurements. Preserve skip and failure reasons rather than omitting unsuccessful models.
 
+Resumed reports retain previously completed measurements with their original run provenance and label those rows as reused. They are a combined result collection, not necessarily measurements taken at one time or with one Ollama version. Fresh runs do not reuse history.
+
 Write machine-readable JSON and a human-readable Markdown report for each run:
 
 ```text

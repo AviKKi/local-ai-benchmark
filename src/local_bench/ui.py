@@ -34,7 +34,7 @@ class Dashboard:
     def render(self):
         table = Table.grid(expand=True)
         table.add_row("Stage", Text(self.stage))
-        table.add_row("Models", Text("  ".join(f"{name}: {self.counts[name]}" for name in ("completed", "skipped", "failed", "planned"))))
+        table.add_row("Models", Text("  ".join(f"{name}: {self.counts[name]}" for name in ("completed", "reused", "skipped", "failed", "planned"))))
         if self.sample:
             gib = 1024 ** 3
             table.add_row("Memory", f"Available {self.sample['available']/gib:.1f} GiB · owned footprint {self.sample['footprint']/gib:.1f} GiB · pressure {self.sample['pressure']}")
