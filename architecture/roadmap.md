@@ -4,7 +4,7 @@ The project starts with a small proof of concept, then expands to additional dev
 
 ## Phase 1: macOS and Ollama LLMs
 
-Status: model catalog, modular Python runner, progress UI and JSON/Markdown reporting implemented. Live model validation and published measurements are pending.
+Status: model catalog, modular Python runner, progress UI and JSON/Markdown reporting implemented. Initial live measurements are published for an Apple M4 Pro Mac mini with 64 GiB RAM; broader model and device coverage remains pending.
 
 - Run on Apple Silicon macOS using the Ollama CLI.
 - Benchmark text generation by local LLMs; test multimodal LLMs with text input only.
