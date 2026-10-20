@@ -45,25 +45,27 @@ Latest measurements: **mac16-11-64gib** · 17 models measured on **Apple M4 Pro*
 
 The [latest run](benchmarks/runs/mac16-11-64gib/2026-10-20T205837.438946Z/report.md) was interrupted; only completed model measurements are shown below. Earlier completed runs are in the [results index](benchmarks/README.md).
 
+Sorted by single-request decode throughput, highest first.
+
 | Model | Single decode tok/s | Sequential batch decode tok/s |
 | --- | ---: | ---: |
 | gemma3:270m-it-q8_0 | 309.24 | 326.86 |
 | qwen3:0.6b-q4_K_M | 256.96 | 257.57 |
-| gemma3:1b-it-q4_K_M | 175.90 | 176.93 |
 | llama3.2:1b-instruct-q4_K_M | 234.38 | 233.74 |
+| gemma3:1b-it-q4_K_M | 175.90 | 176.93 |
 | qwen2.5-coder:1.5b-instruct-q4_K_M | 169.59 | 169.29 |
 | deepseek-r1:1.5b-qwen-distill-q4_K_M | 169.25 | 168.41 |
-| qwen3:1.7b-q4_K_M | 149.74 | 151.28 |
-| llama3.2:3b-instruct-q4_K_M | 99.75 | 99.44 |
-| phi4-mini:3.8b-q4_K_M | 79.71 | 79.50 |
-| deepseek-r1:14b-qwen-distill-q4_K_M | 26.39 | 26.17 |
 | qwen3.5:0.8b-q8_0 | 158.25 | 159.18 |
+| qwen3:1.7b-q4_K_M | 149.74 | 151.28 |
 | qwen3.5:2b-q4_K_M | 119.51 | 118.05 |
-| qwen3.5:9b-q4_K_M | 39.44 | 39.27 |
-| gemma4:e4b-it-q4_K_M | 84.73 | 84.55 |
-| ministral-3:14b | 27.79 | 27.57 |
+| llama3.2:3b-instruct-q4_K_M | 99.75 | 99.44 |
 | granite4.2:3b-q4_K_M | 88.21 | 88.16 |
+| gemma4:e4b-it-q4_K_M | 84.73 | 84.55 |
+| phi4-mini:3.8b-q4_K_M | 79.71 | 79.50 |
 | granite4.2:8b-q4_K_M | 42.63 | 42.43 |
+| qwen3.5:9b-q4_K_M | 39.44 | 39.27 |
+| ministral-3:14b | 27.79 | 27.57 |
+| deepseek-r1:14b-qwen-distill-q4_K_M | 26.39 | 26.17 |
 
 Decode throughput includes generated thinking tokens where reported. Requests run sequentially; probes and warmups are excluded. Output quality is not scored.
 <!-- BENCHMARKS:END -->

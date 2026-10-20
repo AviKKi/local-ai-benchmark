@@ -31,6 +31,12 @@ def format_rate(value):
     return f"{value:.2f}" if value is not None else "—"
 
 
+def model_throughput_order(model):
+    rate = next((profile.get("metrics", {}).get("generation_tokens_per_second")
+                 for profile in model.get("profiles", []) if profile.get("id") == "single"), None)
+    return (rate is None, -rate if rate is not None else 0)
+
+
 def render_report(report):
     lines = ["# Benchmark Run", "", f"- Run: `{report['run_id']}`", f"- Device: `{report['device_id']}`",
              f"- Status: {report['status']}", f"- Catalog: {report['catalog_as_of']}",
@@ -38,7 +44,7 @@ def render_report(report):
              "Decoding throughput includes generated thinking tokens where reported by Ollama. Probes and warmups are excluded. Batch requests run sequentially. Output quality is not scored.", "",
              "| Model | Status | Profile | Decode tok/s | End-to-end tok/s | Reason |",
              "| --- | --- | --- | ---: | ---: | --- |"]
-    for model in report["models"]:
+    for model in sorted(report["models"], key=model_throughput_order):
         profiles = model.get("profiles", [])
         for profile in profiles or [{}]:
             metrics = profile.get("metrics", {})
