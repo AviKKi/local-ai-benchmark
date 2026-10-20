@@ -35,7 +35,7 @@ uv run local-ai-benchmark --resume --download-workers 1
 uv run local-ai-benchmark --resume --download-workers 2
 ```
 
-Two user-run partial-transfer sweeps measured single-download throughput of 9.868/9.486 MB/s and two-download aggregate throughput of 11.390/10.965 MB/s, about 15–16% higher. Four/six downloads gave only modest additional bandwidth; two stayed within 5% of peak in both sweeps. This selects a conservative default, not a claim that full model downloads or every network will see the same gain. The separate shell experiment remains available to retest on another system/network.
+Two user-run partial-transfer sweeps measured single-download throughput of 9.868/9.486 MB/s and two-download aggregate throughput of 11.390/10.965 MB/s, about 15–16% higher. Four/six downloads gave only modest additional bandwidth; two stayed within 5% of peak in both sweeps. This selects a conservative default, not a claim that full model downloads or every network will see the same gain.
 
 Only statically eligible, non-reused models within `--limit` enter the pair queue. Combined disk admission reserves all queued weights plus staging; insufficient pair capacity causes automatic serial fallback. Each artifact retains independent manifest/blob verification, skip/failure handling and load-time admission checks. Partial pair failures still allow a verified partner to benchmark. Failure during inference clears the cache and safely re-downloads a later partner if needed.
 
@@ -58,24 +58,6 @@ Resume scans the output directory's compatible run history, not just the last re
 Only completed model records with all expected measured requests, usable timing metrics, matching context/quantization and a manifest digest matching the current catalog prefix are reusable. Failed, skipped, interrupted, missing or incomplete models are attempted again subject to current safety checks. A resource-constrained model may consequently be skipped again. Old reports remain untouched; each resume creates a new report containing reused results with their original run provenance and model-specific Ollama version. `REUSED` events and the dashboard distinguish these from new completions and actual skips. Reused models do not consume `--limit` attempts.
 
 History from before measurement signatures were introduced is checked against recorded options, prompts and complete profiles. New reports additionally fingerprint the full benchmark configuration. Resume is not an engine-version comparison: preserved results may come from an earlier Ollama version. Use `--fresh` to remeasure after engine changes or to obtain an entirely new snapshot.
-
-### Download Concurrency Experiment
-
-Keep network experiments separate from the benchmark runner. After the benchmark finishes or is stopped, run:
-
-```sh
-bash scripts/test-download-concurrency.sh --dry-run
-bash scripts/test-download-concurrency.sh
-TARGET_PERCENT=10 MAX_SECONDS=180 bash scripts/test-download-concurrency.sh
-```
-
-The standalone Bash script requires Ollama, curl, jq and lsof. It sweeps **1, 2, 4 and 6 simultaneous downloads**, using the first N tags from a six-model pool. Defaults are six distinct enabled models with approximately 4.6–6 GB of weights; optionally pass six exact enabled catalog tags as positional arguments. Each trial uses a fresh owned store/server on port 11436 and stops after approximately 5% (configurable to 10%) of the participating models' combined published sizes has been observed. The sample follows the largest reported layer for each pull; small metadata or auxiliary layers are not treated as weight progress. Sampling is once per second and uses approximate catalog sizes, so the stopping point can overshoot. No model is loaded and no inference is performed. These disposable weights are not used as verified benchmark inputs. The default per-level timeout is 300 seconds; larger aggregate samples at six downloads may take longer even when aggregate throughput is unchanged.
-
-The script stops only its own curl clients and daemon, removes partial downloads on normal exit/interrupt, and refuses an occupied test port or an active benchmark server on port 11435. `MODELS_FILE`, `WORK_ROOT` and `PORT` can override defaults. SIGKILL/power loss cannot run shell cleanup; inspect any remaining `download-test.*` workspace before removing it.
-
-Before each concurrency level, reserve its full combined catalog upper bounds multiplied by the staging allowance, even though only a fraction should be downloaded. Levels that do not fit are explicitly skipped; lower safe levels can still run. Existing files, including any model store already on the volume, are excluded from actual free disk by the filesystem. Require that reservation plus `max(10 GiB, catalog reserve bytes, catalog volume fraction)`, preserving the existing stronger 20 GiB/10% reserve. Recheck free disk, bounded log sizes and store growth while sampling. No installer or inference runs in this experiment; it is not a substitute for the Python runner's RAM/pressure watchdog.
-
-The TSV summary shows concurrency, status, observed payload bytes, seconds and aggregate MB/s, followed by speedup relative to a single download. It reports the fastest level and a provisional sweet spot: the lowest tested concurrency within 5% of peak throughput. Failed/stalled samples are inconclusive rather than successful zero-speed measurements. Results include request setup/handshake time and omit unreported bytes. Different levels use different-sized subsets of the pool, so this is a rough bytes-normalized bandwidth sweep, not a matched-workload controlled experiment. Remote CDN caches, trial order, model mix, network variability and Ollama's own multipart downloading can influence the result. Repeat with larger distinct models and compare errors as well as throughput; a flat curve alone cannot establish a server/IP cap. Production download pairs use the measured two-download sweet spot; background transfers during inference and multiple resident models remain disabled.
 
 Publish highlights and add a link to the results index after a measured run:
 

@@ -38,8 +38,6 @@ Downloads use **bounded pairs** by default, based on local network measurements.
 uv run local-ai-benchmark --resume --download-workers 1
 ```
 
-A separate [partial-download experiment](architecture/runner-lifecycle.md#download-concurrency-experiment) compares serial and parallel network transfers without changing benchmark execution or loading models.
-
 ## Latest Benchmarks
 
 <!-- BENCHMARKS:START -->
