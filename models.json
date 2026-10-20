@@ -65,7 +65,8 @@
       "available_memory_required": true,
       "allow_swap_as_capacity": false,
       "admit_only_when_memory_pressure": "normal",
-      "formula": "budget = ceil(model.resources.estimated_peak_unified_memory_bytes * estimate_multiplier); require physical >= minimum_physical_memory_bytes AND budget <= physical * maximum_physical_memory_fraction AND budget + os_reserve_bytes <= physical AND budget + minimum_available_after_admission_bytes <= available; if Metal recommended working set is available also require budget <= recommended_working_set * maximum_metal_working_set_fraction_if_reported."
+      "resident_model_credit": "For a request on an already loaded, run-owned model, replace budget in the available-memory comparison with max(0, budget - verified_owned_physical_footprint); do not relax the physical-memory cap or watchdog.",
+      "formula": "budget = ceil(model.resources.estimated_peak_unified_memory_bytes * estimate_multiplier); require physical >= minimum_physical_memory_bytes AND budget <= physical * maximum_physical_memory_fraction AND budget + os_reserve_bytes <= physical AND budget + minimum_available_after_admission_bytes <= available; apply resident_model_credit only for an already loaded owned model. If Metal recommended working set is available also require budget <= recommended_working_set * maximum_metal_working_set_fraction_if_reported."
     },
     "disk": {
       "reserve_bytes": 21474836480,
