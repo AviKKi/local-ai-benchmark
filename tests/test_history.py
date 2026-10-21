@@ -107,11 +107,22 @@ class HistoryCase(unittest.TestCase):
             choose_resume([(None, self.report)], True, io.StringIO(), self.warning)
         self.assertFalse(choose_resume([], False, io.StringIO(), self.warning))
 
-    def test_no_arguments_enables_prompt_but_explicit_flags_do_not(self):
-        with patch("local_bench.cli.run", return_value=0) as run:
+    def test_interactive_options_preserve_mode_prompt(self):
+        with patch("local_bench.cli.run", return_value=0) as run, patch("local_bench.cli.sys.stdin.isatty", return_value=True):
             main([])
             self.assertTrue(run.call_args.args[0].prompt_for_mode)
-            main(["--no-ui"])
+            for options in (["--no-ui"], ["--download-workers", "1"], ["--model", "qwen3:*"], ["--publish"]):
+                with self.subTest(options=options):
+                    main(options)
+                    self.assertTrue(run.call_args.args[0].prompt_for_mode)
+            for mode in ("--resume", "--fresh", "--plan", "--publish-only"):
+                with self.subTest(mode=mode):
+                    main([mode])
+                    self.assertFalse(run.call_args.args[0].prompt_for_mode)
+
+    def test_noninteractive_explicit_options_keep_existing_behavior(self):
+        with patch("local_bench.cli.run", return_value=0) as run, patch("local_bench.cli.sys.stdin.isatty", return_value=False):
+            main(["--download-workers", "1"])
             self.assertFalse(run.call_args.args[0].prompt_for_mode)
 
 

@@ -23,7 +23,7 @@ The plan checks local RAM and disk without installing or downloading anything. T
 uv run local-ai-benchmark --publish
 ```
 
-`--publish` adds a successfully completed measured run to the results index and refreshes the generated highlights below. With no arguments, an interactive terminal offers **resume** or **fresh** when compatible history exists. Resume keeps completed measurements for this hardware/OS and workload, while retrying skipped, failed and unfinished models. For explicit, non-interactive use:
+`--publish` adds a successfully completed measured run to the results index and refreshes the generated highlights below. An interactive terminal offers **resume** or **fresh** when compatible history exists, including when options such as `--download-workers 1` are supplied. Pass `--resume` or `--fresh` to select a mode explicitly. Resume keeps completed measurements for this hardware/OS and workload, while retrying skipped, failed and unfinished models. For explicit, non-interactive use:
 
 ```sh
 uv run local-ai-benchmark --resume

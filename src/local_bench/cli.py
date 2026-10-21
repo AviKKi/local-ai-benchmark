@@ -311,7 +311,9 @@ def run(args):
 def main(argv=None):
     arguments = sys.argv[1:] if argv is None else list(argv)
     args = parser().parse_args(arguments)
-    args.prompt_for_mode = not arguments
+    args.prompt_for_mode = not (args.resume or args.fresh or args.plan or args.publish_only) and (
+        not arguments or sys.stdin.isatty()
+    )
     previous = signal.getsignal(signal.SIGTERM)
 
     def terminate(signum, frame):

@@ -43,7 +43,7 @@ Reports record the requested download worker count, strategy, batch membership, 
 
 ### Resume or Fresh
 
-With no arguments, the runner offers resume or fresh if compatible history exists and stdin is a terminal. Enter accepts resume. With no compatible history it starts fresh. If history exists but stdin is not interactive, pass an explicit mode rather than relying on a prompt:
+The runner offers resume or fresh if compatible history exists and stdin is a terminal, including with options such as `--download-workers 1`, `--model` or `--publish`. Enter accepts resume. With no compatible history it starts fresh. If history exists but stdin is not interactive, pass an explicit mode rather than relying on a prompt:
 
 ```sh
 uv run local-ai-benchmark --resume
@@ -51,7 +51,7 @@ uv run local-ai-benchmark --fresh
 uv run local-ai-benchmark --resume --model 'qwen3.5:*' --no-ui
 ```
 
-Other explicit command-line options retain fresh-run behavior unless `--resume` is also passed. `--resume` cannot be combined with `--fresh` or `--plan`.
+Explicit `--resume` and `--fresh` bypass the prompt, as do `--plan` and `--publish-only`. For backward compatibility, non-interactive invocations with other explicit options retain fresh-run behavior unless `--resume` is passed; scripts should always specify their intended mode. `--resume` cannot be combined with `--fresh` or `--plan`.
 
 Resume scans the output directory's compatible run history, not just the last report: a newer interrupted or limited run cannot hide older successes. Compatibility matches hardware configuration, physical RAM, architecture and OS version (not volatile available memory), benchmark settings and prompts. No serial number or hardware UUID is used, so identically configured machines sharing a results directory cannot be uniquely distinguished. Use separate output directories for such machines. Changing `--device` only changes the new report label; it does not discard matching history.
 
