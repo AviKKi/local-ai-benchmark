@@ -23,7 +23,7 @@ from .metrics import aggregate
 from .processes import CommandRunner, cleanup_signals
 from .prompts import PROMPTS, validate_prompts
 from .registry import Registry
-from .reports import Reports, publish, utc_now
+from .reports import Reports, publish, publish_saved, utc_now
 from .safety import Guard, disk_reason, memory_budget, memory_reason
 from .system import MacTelemetry
 from .ui import Dashboard
@@ -55,6 +55,7 @@ def parser():
     result.add_argument("--work-dir", type=Path, default=Path(".benchmark-work"))
     result.add_argument("--output-dir", type=Path, default=Path("benchmarks/runs"))
     result.add_argument("--publish", action="store_true", help="Update README highlights and the benchmark index after a completed measured run")
+    result.add_argument("--publish-only", action="store_true", help="Regenerate README highlights and the benchmark index from saved benchmark reports")
     result.add_argument("--download-workers", type=int, choices=(1, 2), help="Download one model or a pair before serial inference; default follows catalog (2)")
     mode = result.add_mutually_exclusive_group()
     mode.add_argument("--resume", action="store_true", help="Reuse completed compatible measurements for this system; retry skipped, failed and unfinished models")
@@ -213,6 +214,13 @@ def execute(args, catalog, models, telemetry, specs, report, reports, ui, worksp
 
 
 def run(args):
+    root = args.models_file.resolve().parent
+    if args.publish_only:
+        if args.plan or args.publish or args.resume or args.fresh or args.model or args.limit is not None or args.device or args.download_workers:
+            raise BenchmarkError("--publish-only cannot be combined with benchmark execution options")
+        published = publish_saved(root, lambda message: Console().print(message, markup=False))
+        Console().print(f"Published {published} latest model measurements from saved reports", markup=False)
+        return 0
     if args.limit is not None and args.limit < 1:
         raise BenchmarkError("--limit must be positive")
     if args.plan and args.publish:
@@ -232,7 +240,6 @@ def run(args):
     if not models:
         raise BenchmarkError("No models matched --model")
     models.sort(key=lambda model: (not model["enabled"], model["resources"]["download_bytes_upper_bound"], model["id"]))
-    root = args.models_file.resolve().parent
     if args.publish and not args.output_dir.resolve().is_relative_to(root / "benchmarks" / "runs"):
         raise BenchmarkError("--publish requires output inside this project's benchmarks/runs")
     run_id = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M%S.%fZ")

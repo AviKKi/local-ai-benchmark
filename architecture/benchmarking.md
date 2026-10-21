@@ -32,7 +32,7 @@ Use a stable, filesystem-safe device identifier and a unique UTC timestamp for t
 
 ## GitHub Publication
 
-[`benchmarks/README.md`](../benchmarks/README.md) is the results landing page. Pass `--publish` to add a link to a completed measured run and update root README highlights.
+[`benchmarks/README.md`](../benchmarks/README.md) is the results landing page. Pass `--publish` after a measured run, or `--publish-only` to regenerate publication from saved reports without running a benchmark. Publication selects the latest direct completed measurement for each `model_id`; completed records in interrupted runs remain eligible, while resumed copies defer to their original direct measurement when it is available.
 
 The root [`README.md`](../README.md) contains one generated highlights section bounded by these exact markers:
 
@@ -42,7 +42,7 @@ Results coming soon.
 <!-- BENCHMARKS:END -->
 ```
 
-Replace only the content between the markers. Require exactly one opening and closing marker in the correct order, and leave the file untouched if validation fails. Use paths relative to the root README for highlight links. Derive highlights from saved run results and retain the surrounding manually maintained introduction and documentation links. Publication requires at least one completed model; plan-only reports do not qualify.
+Replace only the content between the markers. Require exactly one opening and closing marker in the correct order, and leave the file untouched if validation fails. Use paths relative to the root README for highlight links. Derive highlights from saved run results and retain the surrounding manually maintained introduction and documentation links. Publication requires at least one completed model; plan-only reports do not qualify. The results index has an equivalent `<!-- BENCHMARK-RUNS:START -->` and `<!-- BENCHMARK-RUNS:END -->` generated region.
 
 
 ## Related Documentation

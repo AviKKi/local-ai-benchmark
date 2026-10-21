@@ -67,6 +67,12 @@ uv run local-ai-benchmark --limit 1 --publish
 
 Publication requires at least one successfully measured model and output under this project's `benchmarks/runs/`. It preserves content outside the root README markers and does not push or commit changes.
 
+Regenerate publication from the saved archive without initializing telemetry, acquiring the run lock, downloading a model or invoking Ollama:
+
+```sh
+uv run local-ai-benchmark --publish-only
+```
+
 Run the tests without downloading models:
 
 ```sh

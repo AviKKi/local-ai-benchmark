@@ -15,7 +15,7 @@ from local_bench.config import BenchmarkError, SafetyError, load_catalog, valida
 from local_bench.metrics import aggregate, duration_seconds, parse_metrics
 from local_bench.processes import CommandRunner
 from local_bench.registry import MANIFEST_TYPE, Manifest, Registry, validate_manifest
-from local_bench.reports import publish
+from local_bench.reports import publish, publish_saved
 from local_bench.safety import Guard, Volume, disk_reason, memory_reason
 from local_bench.system import Snapshot
 
@@ -333,14 +333,26 @@ class LifecycleCase(unittest.TestCase):
 
 
 class PublicationCase(unittest.TestCase):
+    def write_saved_report(self, root, run_id, status, models):
+        directory = root / "benchmarks" / "runs" / "device" / run_id
+        directory.mkdir(parents=True)
+        (directory / "report.md").write_text("# Report\n")
+        (directory / "results.json").write_text(json.dumps({
+            "run_id": run_id, "device_id": "device", "started_at": run_id,
+            "status": status, "plan_only": False, "models": models,
+        }))
+
     def test_invalid_markers_leave_readme_untouched(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "README.md").write_text("manual content")
             directory = root / "benchmarks" / "runs" / "device" / "run"
             directory.mkdir(parents=True)
+            (directory / "report.md").write_text("# Report\n")
+            (directory / "results.json").write_text(json.dumps({"run_id": "run", "device_id": "device", "models": [{"model_id": "model", "status": "completed"}]}))
+            (root / "benchmarks" / "README.md").write_text("## Run Reports\n\n<!-- BENCHMARK-RUNS:START -->\nold\n<!-- BENCHMARK-RUNS:END -->\n")
             with self.assertRaisesRegex(BenchmarkError, "markers"):
-                publish(root, directory, {"status": "completed", "models": [{"status": "completed"}]})
+                publish(root, directory, {"status": "completed", "models": [{"model_id": "model", "status": "completed"}]})
             self.assertEqual((root / "README.md").read_text(), "manual content")
 
     def test_publish_preserves_manual_sections(self):
@@ -349,13 +361,51 @@ class PublicationCase(unittest.TestCase):
             (root / "README.md").write_text("Intro\n<!-- BENCHMARKS:START -->\nold\n<!-- BENCHMARKS:END -->\nFooter\n")
             directory = root / "benchmarks" / "runs" / "device" / "run"
             directory.mkdir(parents=True)
-            (root / "benchmarks" / "README.md").write_text("# Results\n\n## Run Reports\n")
-            report = {"status": "completed", "run_id": "run", "device_id": "device", "models": [{"status": "completed"}]}
+            (root / "benchmarks" / "README.md").write_text("# Results\n\n## Run Reports\n\n<!-- BENCHMARK-RUNS:START -->\nold\n<!-- BENCHMARK-RUNS:END -->\n")
+            report = {"status": "completed", "run_id": "run", "device_id": "device", "models": [{"model_id": "model", "status": "completed"}]}
+            (directory / "results.json").write_text(json.dumps({**report, "plan_only": False}))
+            (directory / "report.md").write_text("# Report\n")
             publish(root, directory, report)
             result = (root / "README.md").read_text()
             self.assertTrue(result.startswith("Intro\n"))
             self.assertTrue(result.endswith("\nFooter\n"))
             self.assertIn("benchmarks/runs/device/run/report.md", result)
+
+    def test_publish_saved_prefers_direct_measurement_and_renders_each_model(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "README.md").write_text("Intro\n<!-- BENCHMARKS:START -->\nold\n<!-- BENCHMARKS:END -->\nFooter\n")
+            index = root / "benchmarks" / "README.md"
+            index.parent.mkdir()
+            index.write_text("# Results\n\n## Run Reports\n\n<!-- BENCHMARK-RUNS:START -->\nold\n<!-- BENCHMARK-RUNS:END -->\n")
+            direct = {"model_id": "one", "ollama_tag": "one:latest", "status": "completed", "profiles": [
+                {"id": "single", "metrics": {"generation_tokens_per_second": 10}},
+                {"id": "batch_sequential", "metrics": {"generation_tokens_per_second": 8}},
+            ]}
+            reused = {**direct, "profiles": [{"id": "single", "metrics": {"generation_tokens_per_second": 99}}], "reused_from": {"run_id": "2026-01-01"}}
+            second = {"model_id": "two", "ollama_tag": "two:latest", "status": "completed", "profiles": [
+                {"id": "single", "metrics": {"generation_tokens_per_second": 20}},
+            ]}
+            self.write_saved_report(root, "2026-01-01", "interrupted", [direct])
+            self.write_saved_report(root, "2026-01-02", "completed", [reused, second])
+
+            self.assertEqual(publish_saved(root), 2)
+            highlights = (root / "README.md").read_text()
+            self.assertIn("| one:latest | device | 10.00 | 8.00 | [report](benchmarks/runs/device/2026-01-01/report.md) |", highlights)
+            self.assertIn("| two:latest | device | 20.00 | — | [report](benchmarks/runs/device/2026-01-02/report.md) |", highlights)
+            self.assertLess(highlights.index("two:latest"), highlights.index("one:latest"))
+            self.assertIn("run interrupted.", index.read_text())
+
+    def test_publish_only_does_not_load_catalog_or_run_benchmark(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "README.md").write_text("<!-- BENCHMARKS:START -->\nold\n<!-- BENCHMARKS:END -->\n")
+            index = root / "benchmarks" / "README.md"
+            index.parent.mkdir()
+            index.write_text("## Run Reports\n\n<!-- BENCHMARK-RUNS:START -->\nold\n<!-- BENCHMARK-RUNS:END -->\n")
+            self.write_saved_report(root, "2026-01-01", "completed", [{"model_id": "one", "status": "completed", "profiles": []}])
+            with patch("local_bench.cli.load_catalog", side_effect=AssertionError("should not load catalog")), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(main(["--models-file", str(root / "models.json"), "--publish-only"]), 0)
 
 
 if __name__ == "__main__":
