@@ -56,12 +56,13 @@ class MacTelemetry:
     def snapshot(self):
         try:
             memory = psutil.virtual_memory()
-            free_and_inactive = memory.free + memory.inactive
             pressure_value = int.from_bytes(self.sysctl("kern.memorystatus_vm_pressure_level"), "little")
             pressure = {1: "normal", 2: "warning", 4: "critical"}.get(pressure_value)
             if pressure is None:
                 raise SafetyError(f"Unknown macOS memory-pressure value: {pressure_value}")
-            return Snapshot(memory.total, min(memory.available, free_and_inactive), pressure, psutil.swap_memory().used)
+            # psutil.available already includes reclaimable memory; do not add
+            # free, inactive or cached pages a second time.
+            return Snapshot(memory.total, memory.available, pressure, psutil.swap_memory().used)
         except (OSError, psutil.Error, AttributeError) as error:
             raise SafetyError(f"Required memory telemetry unavailable: {error}") from error
 
@@ -81,5 +82,5 @@ class MacTelemetry:
             "logical_cpu_count": psutil.cpu_count(), "physical_cpu_count": psutil.cpu_count(logical=False),
             "memory": asdict(self.snapshot()), "page_size_bytes": os.sysconf("SC_PAGE_SIZE"),
             "metal_recommended_working_set_bytes": None,
-            "metal_working_set_note": "Not exposed by this telemetry provider; the optional catalog limit is not applied.",
+            "metal_working_set_note": "Not exposed by this telemetry provider; admission uses startup available RAM minus the configured buffer.",
         }

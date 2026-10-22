@@ -1,3 +1,5 @@
+import base64
+import binascii
 import hashlib
 import json
 import re
@@ -33,6 +35,7 @@ class Manifest:
     document: dict
     payload_bytes: int
     quantization: str | None
+    config_size_bytes: int | None = None
 
 
 def validate_manifest(raw, model, policy, config):
@@ -82,7 +85,10 @@ class Registry:
             worker = Path(__file__).with_name("metadata_worker.py")
             result = self.commands.run([sys.executable, str(worker), url, str(maximum), str(timeout)],
                                        os.environ.copy(), timeout)
-            raw = result.stdout.encode("utf-8")
+            try:
+                raw = base64.b64decode(result.stdout, validate=True)
+            except (ValueError, binascii.Error) as error:
+                raise BenchmarkError("Invalid metadata worker response encoding") from error
             if len(raw) > maximum:
                 raise BenchmarkError("Registry metadata exceeded its byte limit")
             return raw
@@ -137,9 +143,18 @@ class Registry:
                 raise BenchmarkError("Invalid registry config descriptor")
             family = model["ollama_tag"].split(":")[0]
             config_url = f"https://registry.ollama.ai/v2/library/{family}/blobs/{descriptor['digest']}"
-            config_raw = self.fetch(config_url, descriptor["size"], guard)
-            if len(config_raw) != descriptor["size"] or "sha256:" + hashlib.sha256(config_raw).hexdigest() != descriptor["digest"]:
-                raise BenchmarkError("Registry config size/digest mismatch")
-            return validate_manifest(raw, model, self.policy, json.loads(config_raw))
+            config_raw = self.fetch(config_url, self.policy["disk"]["maximum_manifest_bytes"], guard)
+            if "sha256:" + hashlib.sha256(config_raw).hexdigest() != descriptor["digest"]:
+                raise BenchmarkError("Registry config digest mismatch")
+            manifest = validate_manifest(raw, model, self.policy, json.loads(config_raw))
+            manifest.config_size_bytes = len(config_raw)
+            # Some registry descriptors have stale sizes despite a correct hash.
+            # Reserve the larger size without rewriting the frozen manifest.
+            manifest.payload_bytes += max(0, len(config_raw) - descriptor["size"])
+            if manifest.payload_bytes > model["resources"]["download_bytes_upper_bound"]:
+                raise BenchmarkError("Verified config size exceeds the catalog download bound")
+            if len(config_raw) != descriptor["size"] and self.commands is not None:
+                self.commands.event("metadata", f"{model['ollama_tag']}: config declares {descriptor['size']} bytes, verified {len(config_raw)} bytes by SHA-256")
+            return manifest
         except (ValueError, TypeError, KeyError) as error:
             raise BenchmarkError(f"Malformed registry metadata: {error}") from error

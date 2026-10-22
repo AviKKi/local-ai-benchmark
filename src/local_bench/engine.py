@@ -175,8 +175,12 @@ class Ollama:
         self.verify_downloaded_manifest(model, manifest)
         for descriptor in [manifest.document["config"], *manifest.document["layers"]]:
             blob = self.store / "blobs" / descriptor["digest"].replace(":", "-")
-            if not blob.is_file() or blob.stat().st_size != descriptor["size"]:
+            is_config = descriptor is manifest.document["config"]
+            expected_size = manifest.config_size_bytes if is_config and manifest.config_size_bytes is not None else descriptor["size"]
+            if not blob.is_file() or blob.stat().st_size != expected_size:
                 raise BenchmarkError("Downloaded blob size differs from the admitted manifest")
+            if is_config and "sha256:" + hashlib.sha256(blob.read_bytes()).hexdigest() != descriptor["digest"]:
+                raise BenchmarkError("Downloaded config digest differs from the admitted manifest")
             if descriptor.get("mediaType") == "application/vnd.ollama.image.model":
                 with blob.open("rb") as stream:
                     if stream.read(4) != b"GGUF":

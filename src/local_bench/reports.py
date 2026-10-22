@@ -48,6 +48,9 @@ def render_report(report):
              "Decoding throughput includes generated thinking tokens where reported by Ollama. Probes and warmups are excluded. Batch requests run sequentially. Output quality is not scored.", "",
              "| Model | Status | Profile | Decode tok/s | End-to-end tok/s | Reason |",
              "| --- | --- | --- | ---: | ---: | --- |"]
+    if report.get("memory_admission"):
+        memory = report["memory_admission"]
+        lines[8:8] = [f"RAM cap: {memory['cap_bytes']/2**30:.2f} GiB; startup available: {memory['startup_available_memory_bytes']/2**30:.2f} GiB; buffer: {memory['buffer_bytes']/2**30:.2f} GiB (available includes reclaimable RAM).", ""]
     for model in sorted(report["models"], key=model_throughput_order):
         profiles = model.get("profiles", [])
         for profile in profiles or [{}]:

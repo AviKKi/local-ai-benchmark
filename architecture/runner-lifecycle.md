@@ -91,7 +91,7 @@ The runner requires Python 3.11 or later. `uv sync` installs the package, its CL
 | `src/local_bench/config.py` | Catalog validation and fixed Modelfile settings |
 | `src/local_bench/system.py` | macOS pressure, available RAM, swap and owned physical footprints |
 | `src/local_bench/safety.py` | Memory/disk admission and watchdog |
-| `src/local_bench/processes.py` | Bounded output, timeouts and owned process-group termination |
+| `src/local_bench/processes.py` | Full response capture, bounded download tails, timeouts and owned process-group termination |
 | `src/local_bench/registry.py` | Frozen manifest/config verification and layer accounting |
 | `src/local_bench/metadata_worker.py` | Killable metadata HTTP/DNS work under the same watchdog |
 | `src/local_bench/engine.py` | Ollama install, environment verification, aliases, CLI runs and teardown |
@@ -100,7 +100,7 @@ The runner requires Python 3.11 or later. `uv sync` installs the package, its CL
 
 ## Execution Order
 
-1. Read and validate the catalog, check the host, and apply [resource admission checks](resource-safety.md) before installing or downloading anything.
+1. Read and validate the catalog, check the host, freeze the RAM cap at startup available memory (including reclaimable RAM) minus 2 GiB, and apply [resource admission checks](resource-safety.md) before installing or downloading anything.
 
 2. Take an exclusive run lock and use a fresh, run-owned model store plus an owned `ollama serve` process on the configured loopback port. Refuse an occupied port. Verify the daemon received the configured environment and uses the intended store. Merely setting variables on an `ollama run` client does not configure an already-running server. Check `ollama serve --help` and model/backend support for the installed version; unsupported options or formats must produce a skip.
 

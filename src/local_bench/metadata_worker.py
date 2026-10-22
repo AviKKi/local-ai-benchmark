@@ -1,3 +1,4 @@
+import base64
 import sys
 from pathlib import Path
 
@@ -11,7 +12,8 @@ def main():
     url, maximum, timeout = sys.argv[1:]
     registry = Registry({"integrity": {"metadata_fetch_timeout_seconds": float(timeout)}})
     try:
-        sys.stdout.buffer.write(registry.fetch(url, int(maximum)))
+        # Preserve exact bytes across the command runner's text interface.
+        sys.stdout.buffer.write(base64.b64encode(registry.fetch(url, int(maximum))))
         return 0
     except BenchmarkError as error:
         print(str(error), file=sys.stderr)

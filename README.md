@@ -17,7 +17,7 @@ uv run local-ai-benchmark --plan
 uv run local-ai-benchmark --limit 1
 ```
 
-The plan checks local RAM and disk without installing or downloading anything. The next command attempts the smallest eligible model and installs Ollama through Homebrew if needed. To benchmark every eligible model:
+The runner freezes its RAM cap at startup available memory (including reclaimable RAM) minus a 2 GiB buffer, and rechecks live RAM before each model and request. The plan checks local RAM and disk without installing or downloading anything. The next command attempts the smallest eligible model and installs Ollama through Homebrew if needed. To benchmark every eligible model:
 
 ```sh
 uv run local-ai-benchmark --publish

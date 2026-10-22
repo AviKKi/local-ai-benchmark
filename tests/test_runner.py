@@ -1,3 +1,4 @@
+import base64
 import contextlib
 import copy
 import hashlib
@@ -8,15 +9,15 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from local_bench.cli import main
 from local_bench.config import BenchmarkError, SafetyError, load_catalog, validate_catalog
 from local_bench.metrics import aggregate, duration_seconds, parse_metrics
-from local_bench.processes import CommandRunner
+from local_bench.processes import CommandResult, CommandRunner, OwnedProcess
 from local_bench.registry import MANIFEST_TYPE, Manifest, Registry, validate_manifest
 from local_bench.reports import publish, publish_saved
-from local_bench.safety import Guard, Volume, disk_reason, memory_reason
+from local_bench.safety import Guard, Volume, disk_reason, initialize_memory_cap, memory_reason
 from local_bench.system import Snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,9 +29,22 @@ class CatalogCase(unittest.TestCase):
         self.catalog = load_catalog(ROOT / "models.json")
         self.model = copy.deepcopy(self.catalog["models"][0])
         self.policy = self.catalog["policy"]
+        initialize_memory_cap(self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0))
 
     def test_current_catalog(self):
-        self.assertEqual(len(self.catalog["models"]), 63)
+        self.assertEqual(len(self.catalog["models"]), 64)
+
+    def test_huggingface_candidate_cannot_be_enabled_without_runner_support(self):
+        model = next(model for model in self.catalog["models"] if model["id"] == "qwen3-coder-next-80b-q3-k-m")
+        model["enabled"] = True
+        with self.assertRaisesRegex(BenchmarkError, "must remain disabled"):
+            validate_catalog(self.catalog)
+
+    def test_huggingface_checksum_cannot_be_used_as_manifest_digest(self):
+        model = next(model for model in self.catalog["models"] if model["id"] == "qwen3-coder-next-80b-q3-k-m")
+        model["provenance"]["observed_manifest_sha256_prefix"] = model["provenance"]["artifact_sha256"]
+        with self.assertRaisesRegex(BenchmarkError, "not Ollama manifest digests"):
+            validate_catalog(self.catalog)
 
     def test_unsupported_version(self):
         self.catalog["schema_version"] = "2.0.0"
@@ -76,15 +90,42 @@ class CatalogCase(unittest.TestCase):
 
     def test_physical_memory_is_not_swap_capacity(self):
         large = next(model for model in self.catalog["models"] if model["ollama_tag"] == "gpt-oss:120b")
-        self.assertEqual(memory_reason(large, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 200*GIB)), "physical_memory_below_model_minimum")
+        self.assertEqual(memory_reason(large, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 200*GIB)), "model_exceeds_startup_memory_cap")
 
     def test_resident_memory_credit(self):
         snapshot = Snapshot(16*GIB, 3*GIB, "normal", 0)
         self.assertIsNotNone(memory_reason(self.model, self.policy, snapshot))
         self.assertIsNone(memory_reason(self.model, self.policy, snapshot, 3*GIB))
 
-    def test_metal_limit(self):
-        self.assertEqual(memory_reason(self.model, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0, GIB)), "model_exceeds_metal_working_set")
+    def test_host_tier_and_metal_fraction_do_not_override_startup_cap(self):
+        self.model["resources"]["minimum_physical_memory_bytes"] = 192*GIB
+        self.assertIsNone(memory_reason(self.model, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0, GIB)))
+
+    def test_startup_cap_is_frozen_despite_later_reclamation(self):
+        initialize_memory_cap(self.policy, Snapshot(64*GIB, 42*GIB, "normal", 0))
+        self.model["resources"]["estimated_peak_unified_memory_bytes"] = 34*GIB
+        self.assertEqual(memory_reason(self.model, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0)), "model_exceeds_startup_memory_cap")
+        self.assertEqual(self.policy["run_memory"]["cap_bytes"], 40*GIB)
+
+    def test_budget_boundary_and_live_buffer(self):
+        self.model["resources"]["estimated_peak_unified_memory_bytes"] = 40*GIB
+        initialize_memory_cap(self.policy, Snapshot(64*GIB, 52*GIB, "normal", 0))
+        self.assertIsNone(memory_reason(self.model, self.policy, Snapshot(64*GIB, 52*GIB, "normal", 0)))
+        self.assertEqual(memory_reason(self.model, self.policy, Snapshot(64*GIB, 52*GIB-1, "normal", 0)), "insufficient_available_memory")
+        self.model["resources"]["estimated_peak_unified_memory_bytes"] += 1
+        self.assertEqual(memory_reason(self.model, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0)), "model_exceeds_startup_memory_cap")
+
+    def test_inconsistent_memory_buffers_are_rejected(self):
+        self.policy["memory"]["startup_buffer_bytes"] = GIB
+        with self.assertRaisesRegex(BenchmarkError, "buffers must match"):
+            validate_catalog(self.catalog)
+
+    def test_startup_cap_is_required_and_low_memory_never_admits(self):
+        self.policy.pop("run_memory")
+        self.assertEqual(memory_reason(self.model, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0)), "startup_memory_cap_unavailable")
+        initialize_memory_cap(self.policy, Snapshot(64*GIB, GIB, "normal", 0))
+        self.assertEqual(self.policy["run_memory"]["cap_bytes"], 0)
+        self.assertEqual(memory_reason(self.model, self.policy, Snapshot(64*GIB, 60*GIB, "normal", 0)), "model_exceeds_startup_memory_cap")
 
     def test_same_volume_budgets_are_added(self):
         paths = {name: Path("/tmp") for name in ("model_store", "temporary_directory", "results_directory", "installer_cache")}
@@ -140,6 +181,43 @@ class CatalogCase(unittest.TestCase):
         with patch.object(registry.opener, "open", return_value=Response()):
             with self.assertRaisesRegex(BenchmarkError, "byte limit"):
                 registry.fetch("https://registry.ollama.ai/test", 64)
+
+    def test_worker_transport_preserves_exact_metadata_bytes(self):
+        raw = '{"name":"你好"}'.encode()
+        commands = Mock()
+        commands.run.return_value = CommandResult(base64.b64encode(raw).decode(), "", 0)
+        self.assertEqual(Registry(self.policy, commands).fetch("https://registry.ollama.ai/test", len(raw)), raw)
+        with self.assertRaisesRegex(BenchmarkError, "byte limit"):
+            Registry(self.policy, commands).fetch("https://registry.ollama.ai/test", len(raw)-1)
+
+    def config_size_fixture(self):
+        config = b'{"model_format":"gguf","file_type":"Q4_K_M"}'
+        document = {"schemaVersion": 2, "mediaType": MANIFEST_TYPE,
+                    "config": {"size": len(config)-3, "digest": "sha256:"+hashlib.sha256(config).hexdigest()},
+                    "layers": [{"size": 100, "digest": "sha256:"+"b"*64, "mediaType": "application/vnd.ollama.image.model"}]}
+        raw = json.dumps(document).encode()
+        self.model["provenance"]["observed_manifest_sha256_prefix"] = hashlib.sha256(raw).hexdigest()[:12]
+        return config, raw
+
+    def test_config_descriptor_size_mismatch_requires_matching_digest(self):
+        config, raw = self.config_size_fixture()
+        registry = Registry(self.policy)
+        with patch.object(registry, "fetch", side_effect=[raw, config]):
+            manifest = registry.resolve(self.model)
+        self.assertEqual(manifest.config_size_bytes, len(config))
+        self.assertEqual(manifest.payload_bytes, len(config)+100)
+        self.assertEqual(manifest.document["config"]["size"], len(config)-3)
+        with patch.object(registry, "fetch", side_effect=[raw, config+b" "]):
+            with self.assertRaisesRegex(BenchmarkError, "config digest mismatch"):
+                registry.resolve(self.model)
+
+    def test_verified_config_size_still_enforces_download_bound(self):
+        config, raw = self.config_size_fixture()
+        self.model["resources"]["download_bytes_upper_bound"] = len(config)+99
+        registry = Registry(self.policy)
+        with patch.object(registry, "fetch", side_effect=[raw, config]):
+            with self.assertRaisesRegex(BenchmarkError, "download bound"):
+                registry.resolve(self.model)
 
     def test_watchdog_aborts_on_swap_growth(self):
         class Telemetry:
@@ -211,6 +289,16 @@ class ProcessCase(unittest.TestCase):
             with self.assertRaisesRegex(BenchmarkError, "exited 3"):
                 runner.run([sys.executable, "-c", "import sys; print('bad',file=sys.stderr); sys.exit(3)"], os.environ.copy(), 5)
 
+    def test_serial_pull_streams_verbose_output_and_retains_final_error(self):
+        self.policy["execution"]["maximum_captured_download_output_bytes"] = 100
+        script = "import sys; print('x'*100000); print('y'*100000,file=sys.stderr); print('final pull error',file=sys.stderr); sys.exit(3)"
+        with tempfile.TemporaryDirectory() as temporary:
+            runner = CommandRunner(self.policy, temporary, lambda *args: None)
+            with patch("local_bench.processes.OwnedProcess", side_effect=lambda args, env, cwd: OwnedProcess([sys.executable, '-c', script], env, cwd)):
+                with self.assertRaisesRegex(BenchmarkError, "final pull error"):
+                    runner.run(["ollama", "pull", "model"], os.environ.copy(), 5)
+            self.assertIsNone(runner.active)
+
     def test_spawn_failure_reaps_process(self):
         import subprocess
 
@@ -236,7 +324,7 @@ class FakeTelemetry:
         return Snapshot(64*GIB, 60*GIB, "normal", 0)
 
     def specs(self):
-        return {"os": "Darwin", "architecture": "arm64", "model": "test-mac", "memory": {"physical": 64*GIB}}
+        return {"os": "Darwin", "architecture": "arm64", "model": "test-mac", "memory": vars(self.snapshot())}
 
     def footprint(self, process):
         return 0
@@ -309,6 +397,7 @@ class LifecycleCase(unittest.TestCase):
             self.assertEqual(code, 0)
             self.assertEqual(report["models"][0]["status"], "planned")
             self.assertEqual(FakeEngine.request_count, 0)
+            self.assertEqual(report["memory_admission"]["cap_bytes"], 58*GIB)
 
     def test_probes_warmups_and_measured_profiles(self):
         with tempfile.TemporaryDirectory() as temporary:

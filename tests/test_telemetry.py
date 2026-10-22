@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 import psutil
 
 from local_bench.config import SafetyError, load_catalog
-from local_bench.safety import Guard
+from local_bench.safety import Guard, initialize_memory_cap
 from local_bench.system import MacTelemetry, Snapshot
 
 
@@ -27,12 +27,30 @@ class TelemetryCase(unittest.TestCase):
         self.process.cpu_times.return_value = SimpleNamespace(user=1.0, system=0.5)
         self.telemetry = Mock()
         self.telemetry.snapshot.return_value = Snapshot(64 * GIB, 60 * GIB, "normal", 0)
+        initialize_memory_cap(catalog["policy"], self.telemetry.snapshot())
         self.telemetry.footprint.return_value = 100
         self.guard = Guard(self.telemetry, catalog["models"][0], catalog["policy"], {}, root, root,
                            lambda: [self.process])
         disk = patch("local_bench.safety.disk_reason", return_value=None)
         disk.start()
         self.addCleanup(disk.stop)
+
+    def test_available_memory_includes_reclaimable_without_double_counting(self):
+        telemetry = MacTelemetry.__new__(MacTelemetry)
+        telemetry.sysctl = Mock(return_value=(1).to_bytes(4, 'little'))
+        memory = SimpleNamespace(total=64*GIB, available=57*GIB, free=50*GIB, inactive=3*GIB)
+        with patch("local_bench.system.psutil.virtual_memory", return_value=memory), patch("local_bench.system.psutil.swap_memory", return_value=SimpleNamespace(used=0)):
+            self.assertEqual(telemetry.snapshot().available, 57*GIB)
+
+    def test_watchdog_enforces_frozen_cap_and_live_buffer(self):
+        self.guard.policy["run_memory"]["cap_bytes"] = 512
+        self.telemetry.footprint.return_value = 513
+        with self.assertRaisesRegex(SafetyError, "model_memory_budget_exceeded"):
+            self.guard.check()
+        self.telemetry.footprint.return_value = 0
+        self.telemetry.snapshot.return_value = Snapshot(64*GIB, GIB, "normal", 0)
+        with self.assertRaisesRegex(SafetyError, "available_memory_below_reserve"):
+            self.guard.check()
 
     def test_cpu_zombie_after_process_discovery(self):
         self.process.cpu_times.side_effect = psutil.ZombieProcess(self.process.pid)

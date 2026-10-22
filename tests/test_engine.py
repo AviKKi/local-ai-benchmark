@@ -9,6 +9,7 @@ from unittest.mock import Mock
 from local_bench.config import BenchmarkError, SafetyError, load_catalog
 from local_bench.engine import Ollama
 from local_bench.processes import CommandResult, CommandRunner
+from local_bench.registry import Manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -59,6 +60,20 @@ class EngineCase(unittest.TestCase):
     def test_missing_download_manifest_has_distinct_error(self):
         manifest = Mock(digest="a"*64)
         with self.assertRaisesRegex(BenchmarkError, "manifest not found"):
+            self.engine.pull(self.catalog["models"][0], manifest)
+
+    def test_download_verifies_actual_config_size_and_digest(self):
+        config = b'{"model_format":"gguf"}'
+        digest = "sha256:" + hashlib.sha256(config).hexdigest()
+        descriptor = {"digest": digest, "size": len(config)-3}
+        manifest = Manifest("a"*64, {"config": descriptor, "layers": []}, len(config), "Q4_K_M", len(config))
+        self.engine.verify_downloaded_manifest = Mock()
+        blob = self.engine.store / "blobs" / digest.replace(":", "-")
+        blob.parent.mkdir(parents=True, exist_ok=True)
+        blob.write_bytes(config)
+        self.engine.pull(self.catalog["models"][0], manifest)
+        blob.write_bytes(b"x"*len(config))
+        with self.assertRaisesRegex(BenchmarkError, "config digest"):
             self.engine.pull(self.catalog["models"][0], manifest)
 
     def manifest_fixture(self, directory="manifests-v2", host="ollama.com", linked=False):

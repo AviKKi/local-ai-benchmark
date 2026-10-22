@@ -114,6 +114,18 @@ class CommandResult:
     returncode: int = 0
 
 
+def capture_output(output, stream, chunk, limit, tail=False):
+    output[stream].extend(chunk)
+    if tail:
+        # Pull progress is a stream, not a response. Keep a bounded diagnostic
+        # tail per stream while continuing to drain both pipes.
+        capacity = max(1, limit // 2)
+        if len(output[stream]) > capacity:
+            del output[stream][:-capacity]
+    elif sum(map(len, output.values())) > limit:
+        raise SafetyError("command_output_limit_exceeded")
+
+
 class CommandRunner:
     def __init__(self, policy, cwd, event):
         self.policy, self.cwd, self.event = policy, cwd, event
@@ -163,7 +175,7 @@ class CommandRunner:
         started = time.monotonic()
         interval = self.policy["watchdog"]["poll_interval_milliseconds"] / 1000
         next_check = started
-        limit = self.policy["execution"]["maximum_captured_output_bytes_per_request"]
+        limit = self.policy["execution"]["maximum_captured_download_output_bytes"]
         try:
             for command in arguments:
                 self.event("command", " ".join(command))
@@ -190,9 +202,7 @@ class CommandRunner:
                     if not chunk:
                         selector.unregister(key.fileobj)
                     else:
-                        state["output"][name].extend(chunk)
-                        if sum(map(len, state["output"].values())) > limit:
-                            raise SafetyError("command_output_limit_exceeded:parallel_pull")
+                        capture_output(state["output"], name, chunk, limit, tail=True)
                         percentages = re.findall(rb"\b(\d{1,3})%", state["output"][name][-4096:])
                         percentage = int(percentages[-1]) // 10 * 10 if percentages else -1
                         if 0 <= percentage <= 100 and percentage != state["percentage"]:
@@ -227,7 +237,8 @@ class CommandRunner:
         self.active = OwnedProcess(args, env, self.cwd)
         owned = self.active
         output = {"stdout": bytearray(), "stderr": bytearray()}
-        limit = self.policy["execution"]["maximum_captured_output_bytes_per_request"]
+        is_pull = len(args) > 1 and args[1] == "pull"
+        limit = self.policy["execution"]["maximum_captured_download_output_bytes" if is_pull else "maximum_captured_output_bytes_per_request"]
         interval = self.policy["watchdog"]["poll_interval_milliseconds"] / 1000
         next_check = started
         last_percentage = -1
@@ -250,10 +261,8 @@ class CommandRunner:
                     if not chunk:
                         selector.unregister(key.fileobj)
                     else:
-                        output[key.data].extend(chunk)
-                        if sum(map(len, output.values())) > limit:
-                            raise SafetyError("command_output_limit_exceeded")
-                        if len(args) > 1 and args[1] == "pull":
+                        capture_output(output, key.data, chunk, limit, tail=is_pull)
+                        if is_pull:
                             percentages = re.findall(rb"\b(\d{1,3})%", output[key.data][-4096:])
                             if percentages:
                                 percentage = int(percentages[-1]) // 10 * 10

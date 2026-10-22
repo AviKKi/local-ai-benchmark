@@ -13,22 +13,30 @@ def memory_budget(model, policy):
     return math.ceil(model["resources"]["estimated_peak_unified_memory_bytes"] * policy["memory"]["estimate_multiplier"])
 
 
+def initialize_memory_cap(policy, snapshot):
+    if not 0 <= snapshot.available <= snapshot.physical or snapshot.physical <= 0:
+        raise SafetyError("Invalid startup memory telemetry")
+    buffer = policy["memory"]["startup_buffer_bytes"]
+    policy["run_memory"] = {
+        "startup_available_memory_bytes": snapshot.available,
+        "buffer_bytes": buffer,
+        "cap_bytes": max(0, snapshot.available - buffer),
+    }
+    return policy["run_memory"].copy()
+
+
 def memory_reason(model, policy, snapshot, resident_credit=0):
     memory = policy["memory"]
     budget = memory_budget(model, policy)
-    if snapshot.physical < model["resources"]["minimum_physical_memory_bytes"]:
-        return "physical_memory_below_model_minimum"
-    if budget > snapshot.physical * memory["maximum_physical_memory_fraction"]:
-        return "model_exceeds_physical_memory_fraction"
-    if budget + memory["os_reserve_bytes"] > snapshot.physical:
-        return "insufficient_os_memory_reserve"
+    if "run_memory" not in policy:
+        return "startup_memory_cap_unavailable"
+    if budget > policy["run_memory"]["cap_bytes"]:
+        return "model_exceeds_startup_memory_cap"
     if snapshot.pressure != memory["admit_only_when_memory_pressure"]:
         return f"memory_pressure_{snapshot.pressure}"
     incremental = max(0, budget - min(budget, resident_credit))
     if incremental + memory["minimum_available_after_admission_bytes"] > snapshot.available:
         return "insufficient_available_memory"
-    if snapshot.metal_recommended is not None and budget > snapshot.metal_recommended * memory["maximum_metal_working_set_fraction_if_reported"]:
-        return "model_exceeds_metal_working_set"
     return None
 
 
@@ -163,7 +171,10 @@ class Guard:
             raise SafetyError("watchdog:available_memory_below_reserve")
         if growth > watchdog["maximum_swap_growth_bytes"]:
             raise SafetyError("watchdog:swap_growth")
-        if max(footprint, drop) > memory_budget(self.model, self.policy):
+        if "run_memory" not in self.policy:
+            raise SafetyError("startup_memory_cap_unavailable")
+        runtime_cap = min(memory_budget(self.model, self.policy), self.policy["run_memory"]["cap_bytes"])
+        if max(footprint, drop) > runtime_cap:
             raise SafetyError("watchdog:model_memory_budget_exceeded")
         reason = disk_reason(self.model, self.policy, self.paths, admission=False)
         if reason:

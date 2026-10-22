@@ -57,11 +57,22 @@ def validate_catalog(catalog):
         for name, value in policy[section].items():
             if isinstance(value, (float, int)) and not isinstance(value, bool) and name != "max_retries_per_model":
                 positive(value, f"policy.{section}.{name}")
-    for name in ("maximum_physical_memory_fraction", "maximum_metal_working_set_fraction_if_reported"):
-        positive(policy["memory"][name], name, 1)
+    if policy["memory"]["capacity_source"] != "startup_available":
+        raise BenchmarkError("Memory capacity must use startup available RAM")
+    if policy["memory"]["startup_buffer_bytes"] != policy["memory"]["minimum_available_after_admission_bytes"] or policy["memory"]["startup_buffer_bytes"] != policy["watchdog"]["minimum_available_memory_bytes"]:
+        raise BenchmarkError("Startup, admission and watchdog memory buffers must match")
     positive(policy["disk"]["reserve_volume_fraction"], "disk reserve fraction", 1)
     if policy["memory"]["estimate_multiplier"] < 1:
         raise BenchmarkError("Memory multiplier cannot be below one")
+    metadata_limit = policy["disk"]["maximum_manifest_bytes"]
+    if type(metadata_limit) is not int:
+        raise BenchmarkError("Metadata byte limit must be an integer")
+    # Worker stdout carries base64 metadata, so full response capture must fit it.
+    if policy["execution"]["maximum_captured_output_bytes_per_request"] < 4 * ((metadata_limit + 2) // 3):
+        raise BenchmarkError("Command output limit must accommodate base64-encoded metadata")
+    download_limit = policy["execution"]["maximum_captured_download_output_bytes"]
+    if type(download_limit) is not int or download_limit < 2:
+        raise BenchmarkError("Download output byte limit must be an integer of at least two")
     if type(policy["execution"]["max_concurrent_downloads"]) is not int or policy["execution"]["max_concurrent_downloads"] not in (1, 2):
         raise BenchmarkError("Only one or two concurrent downloads are supported")
     for name in ("max_loaded_models", "max_parallel_requests"):
@@ -99,9 +110,11 @@ def validate_catalog(catalog):
     identifiers, tags = set(), set()
     for model in catalog["models"]:
         identifier, tag = model["id"], model["ollama_tag"]
+        external = model["provenance"].get("source_type") == "huggingface_gguf"
         if not re.fullmatch(r"[a-z0-9-]+", identifier) or identifier in identifiers:
             raise BenchmarkError(f"Invalid or duplicate model ID: {identifier}")
-        if not re.fullmatch(r"[a-z0-9.-]+:[a-zA-Z0-9_.-]+", tag) or tag in tags:
+        tag_pattern = r"hf\.co/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+" if external else r"[a-z0-9.-]+:[a-zA-Z0-9_.-]+"
+        if not re.fullmatch(tag_pattern, tag) or tag in tags:
             raise BenchmarkError(f"Invalid or duplicate model tag: {tag}")
         if "cloud" in tag or tag.endswith(":latest") or model["execution"] != "local":
             raise BenchmarkError(f"Not an explicit local model: {tag}")
@@ -116,6 +129,18 @@ def validate_catalog(catalog):
             positive(value, name)
             if not isinstance(value, int):
                 raise BenchmarkError(f"{name} must be integer bytes")
+        if external:
+            provenance = model["provenance"]
+            if model["enabled"] or not model.get("disabled_reason"):
+                raise BenchmarkError("Hugging Face artifacts must remain disabled until runner support is implemented")
+            if provenance.get("manifest_url") is not None or provenance.get("observed_manifest_sha256_prefix") is not None:
+                raise BenchmarkError("Hugging Face file checksums are not Ollama manifest digests")
+            if not re.fullmatch(r"[a-f0-9]{64}", provenance.get("artifact_sha256", "")):
+                raise BenchmarkError("Hugging Face artifact requires a full SHA-256")
+            repository = tag.removeprefix("hf.co/").split(":")[0]
+            if not provenance["source_url"].startswith(f"https://huggingface.co/{repository}/blob/"):
+                raise BenchmarkError("Hugging Face source must match the model repository")
+            continue
         prefix = model["provenance"]["observed_manifest_sha256_prefix"]
         if not re.fullmatch(r"[a-f0-9]{12,64}", prefix):
             raise BenchmarkError(f"Invalid manifest digest: {tag}")

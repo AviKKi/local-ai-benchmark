@@ -15,7 +15,7 @@ from local_bench.config import BenchmarkError, SafetyError, load_catalog, valida
 from local_bench.downloads import storage_model
 from local_bench.processes import CommandRunner, OwnedProcess
 from local_bench.registry import Manifest
-from local_bench.safety import Guard
+from local_bench.safety import Guard, initialize_memory_cap
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -172,6 +172,7 @@ class PairPipelineCase(unittest.TestCase):
         self.assertEqual([record["status"] for record in report["models"]], ["interrupted"] * 2)
 
     def test_storage_guard_uses_combined_disk_but_one_model_memory(self):
+        initialize_memory_cap(self.catalog["policy"], test_runner.FakeTelemetry().snapshot())
         combined = storage_model(self.catalog["models"], self.catalog["policy"])
         self.assertEqual(combined["resources"]["download_bytes_upper_bound"], sum(model["resources"]["download_bytes_upper_bound"] for model in self.catalog["models"]))
         with tempfile.TemporaryDirectory() as temporary:
@@ -222,10 +223,13 @@ class ParallelPullCase(unittest.TestCase):
         with self.assertRaisesRegex(SafetyError, "parallel_pull"):
             self.run_pulls("import time; time.sleep(30)", timeout=0.05)
 
-    def test_output_limit_cancels_every_download(self):
-        self.policy["execution"]["maximum_captured_output_bytes_per_request"] = 100
-        with self.assertRaisesRegex(SafetyError, "output_limit"):
-            self.run_pulls("print('x'*1000)")
+    def test_verbose_downloads_retain_bounded_tails_and_errors(self):
+        self.policy["execution"]["maximum_captured_download_output_bytes"] = 100
+        results = self.run_pulls("import sys; print('x'*100000); print('y'*100000,file=sys.stderr); print('final error',file=sys.stderr); sys.exit(7)")
+        for result in results:
+            self.assertEqual(result.returncode, 7)
+            self.assertLessEqual(len(result.stdout.encode()) + len(result.stderr.encode()), 100)
+            self.assertIn("final error", result.stderr)
 
     def test_watchdog_failure_cancels_every_download(self):
         guard = Mock()

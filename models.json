@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "as_of": "2026-10-21",
+  "as_of": "2026-10-22",
   "scope": {
     "phase": 1,
     "engine": "ollama",
@@ -19,7 +19,7 @@
   },
   "coverage": {
     "description": "Broad selection of current general, coding and reasoning LLM families with official local Ollama artifacts, plus useful small baselines and larger-host candidates. This is a researched selection, not an exhaustive quality ranking or every community fine-tune.",
-    "selection": "Prefer explicit quantized GGUF tags; avoid latest aliases, MLX artifacts and cloud inference. Published sources were checked through 2026-10-21.",
+    "selection": "Prefer explicit quantized GGUF tags; avoid latest aliases, MLX artifacts and cloud inference. Published sources were checked through 2026-10-21. One disabled Hugging Face Q3_K_M candidate is recorded pending runner import support; original library research remains dated per entry.",
     "size_provenance": "Registry pages publish rounded decimal sizes. Approximate sizes are not exact manifests; upper bounds add 15% plus 64 MiB. Live manifest checks are mandatory before downloading.",
     "memory_provenance": "All RAM figures and minimum host tiers are conservative planning estimates, not vendor guarantees or measurements on the two Macs.",
     "safety_limitation": "A JSON catalog cannot enforce limits or guarantee zero OOM. A consumer must implement every admission check, watchdog and cleanup rule; skip when required information is unavailable.",
@@ -57,16 +57,15 @@
     "allow_cloud_fallback": false,
     "memory": {
       "estimate_multiplier": 1.25,
-      "maximum_physical_memory_fraction": 0.6,
-      "os_reserve_bytes": 4294967296,
       "minimum_available_after_admission_bytes": 2147483648,
-      "maximum_metal_working_set_fraction_if_reported": 0.8,
       "count_cpu_and_gpu_unified_memory_once": true,
       "available_memory_required": true,
       "allow_swap_as_capacity": false,
       "admit_only_when_memory_pressure": "normal",
-      "resident_model_credit": "For a request on an already loaded, run-owned model, replace budget in the available-memory comparison with max(0, budget - verified_owned_physical_footprint); do not relax the physical-memory cap or watchdog.",
-      "formula": "budget = ceil(model.resources.estimated_peak_unified_memory_bytes * estimate_multiplier); require physical >= minimum_physical_memory_bytes AND budget <= physical * maximum_physical_memory_fraction AND budget + os_reserve_bytes <= physical AND budget + minimum_available_after_admission_bytes <= available; apply resident_model_credit only for an already loaded owned model. If Metal recommended working set is available also require budget <= recommended_working_set * maximum_metal_working_set_fraction_if_reported."
+      "resident_model_credit": "For an already resident run-owned model only, subtract its verified physical footprint from the incremental live admission budget. Never relax the fixed startup cap or watchdog.",
+      "formula": "At script startup, freeze cap = max(0, available_including_reclaimable - startup_buffer_bytes). budget = ceil(model.resources.estimated_peak_unified_memory_bytes * estimate_multiplier); require budget <= cap and normal memory pressure. Before each download/load/request also require max(0, budget - verified_owned_resident_credit) + minimum_available_after_admission_bytes <= current_available_including_reclaimable. Do not rebase or grow cap during the run. Model minimum_physical_memory_bytes is advisory; no physical fraction, extra OS reserve, or Metal fraction is applied. No swap-backed capacity.",
+      "capacity_source": "startup_available",
+      "startup_buffer_bytes": 2147483648
     },
     "disk": {
       "reserve_bytes": 21474836480,
@@ -75,7 +74,7 @@
       "installer_budget_bytes": 2147483648,
       "maximum_total_results_bytes": 1073741824,
       "require_live_manifest_layer_sizes": true,
-      "maximum_manifest_bytes": 4194304,
+      "maximum_manifest_bytes": 16777216,
       "maximum_single_manifest_layer_bytes": 214748364800,
       "count_all_artifact_layers": true,
       "credit_existing_or_shared_blobs": false,
@@ -108,7 +107,8 @@
       "request_timeout_seconds": 180,
       "unload_timeout_seconds": 30,
       "termination_grace_seconds": 5,
-      "maximum_captured_output_bytes_per_request": 4194304
+      "maximum_captured_output_bytes_per_request": 33554432,
+      "maximum_captured_download_output_bytes": 16777216
     },
     "watchdog": {
       "poll_interval_milliseconds": 250,
@@ -2504,6 +2504,61 @@
       },
       "notes": [
         "Memory estimates cover all experts, not only active parameters."
+      ]
+    },
+    {
+      "id": "qwen3-coder-next-80b-q3-k-m",
+      "ollama_tag": "hf.co/unsloth/Qwen3-Coder-Next-GGUF:Q3_K_M",
+      "publisher": "Alibaba",
+      "family": "qwen3-coder-next",
+      "selection_group": "experimental",
+      "task": "coding",
+      "enabled": false,
+      "disabled_reason": "Hugging Face GGUF import and artifact integrity verification are not implemented by this runner; official Ollama library has no Q3_K_M tag.",
+      "parameters_billion": 80,
+      "active_parameters_billion": 3,
+      "quantization": "Q3_K_M",
+      "artifact_format": "gguf",
+      "execution": "local",
+      "benchmark_modalities": [
+        "text"
+      ],
+      "source_modalities": [
+        "text"
+      ],
+      "compatibility": {
+        "os": [
+          "darwin"
+        ],
+        "architectures": [
+          "arm64"
+        ],
+        "backend": "metal",
+        "status": "runtime_verification_required",
+        "minimum_ollama_version": null
+      },
+      "provenance": {
+        "verified_on": "2026-10-22",
+        "source_type": "huggingface_gguf",
+        "source_url": "https://huggingface.co/unsloth/Qwen3-Coder-Next-GGUF/blob/main/Qwen3-Coder-Next-Q3_K_M.gguf",
+        "tags_url": "https://ollama.com/library/qwen3-coder-next/tags",
+        "observed_manifest_sha256_prefix": null,
+        "manifest_url": null,
+        "artifact_sha256": "b12ec74934e548b3e9cb80d05660a9a6a5af1a2aec6fbf5f9e9b4a36626aee75"
+      },
+      "resources": {
+        "published_download_bytes_approx": 38300000000,
+        "download_bytes_upper_bound": 44112109568,
+        "estimated_peak_unified_memory_bytes": 47244640256,
+        "minimum_physical_memory_bytes": 103079215104,
+        "estimate_basis": "Planning estimate for one text request, 2048-token context, num_batch=128, f16 KV cache; includes weights, KV/recurrent state and runtime workspace. Apply policy.memory.estimate_multiplier.",
+        "measured": false
+      },
+      "notes": [
+        "Unsloth community quantization of Qwen3-Coder-Next 80B-A3B; all experts contribute to memory use.",
+        "44 GiB peak is an unmeasured short-context planning estimate; policy multiplier produces a 55 GiB budget.",
+        "Artifact SHA-256 identifies the GGUF file, not an Ollama manifest.",
+        "55 GiB budget must fit startup available RAM minus the 2 GiB buffer; the catalog host-tier field is advisory."
       ]
     },
     {

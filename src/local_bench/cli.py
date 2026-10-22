@@ -24,8 +24,8 @@ from .processes import CommandRunner, cleanup_signals
 from .prompts import PROMPTS, validate_prompts
 from .registry import Registry
 from .reports import Reports, publish, publish_saved, utc_now
-from .safety import Guard, disk_reason, memory_budget, memory_reason
-from .system import MacTelemetry
+from .safety import Guard, disk_reason, initialize_memory_cap, memory_budget, memory_reason
+from .system import MacTelemetry, Snapshot
 from .ui import Dashboard
 
 
@@ -247,12 +247,16 @@ def run(args):
     try:
         telemetry = MacTelemetry()
         specs = telemetry.specs()
+        initialize_memory_cap(catalog["policy"], Snapshot(**specs["memory"]))
     except (BenchmarkError, OSError) as error:
         setup_error = str(error)
     default_device = f"{specs.get('model') or 'macos-arm64'}-{specs.get('memory', {}).get('physical', 0)//1024**3}gib"
     device_id = args.device or re.sub(r"[^a-zA-Z0-9._-]", "-", default_device).lower()
     console = Console()
     warning = lambda message: console.print(message, markup=False)
+    if not setup_error:
+        cap = catalog["policy"]["run_memory"]
+        warning(f"RAM cap: {cap['cap_bytes']/2**30:.2f} GiB (startup available {cap['startup_available_memory_bytes']/2**30:.2f} GiB minus {cap['buffer_bytes']/2**30:.2f} GiB buffer; includes reclaimable RAM)")
     history = []
     resume = args.resume
     if not setup_error and (args.resume or getattr(args, "prompt_for_mode", False)):
@@ -268,6 +272,7 @@ def run(args):
         "run_id": run_id, "device_id": device_id, "started_at": utc_now(), "status": "running",
         "plan_only": args.plan, "catalog_schema_version": catalog["schema_version"], "catalog_as_of": catalog["as_of"],
         "system_specs": specs, "ollama_version": None, "models": [],
+        "memory_admission": catalog["policy"].get("run_memory"),
         "benchmark_options": catalog["benchmark"]["options"],
         "measurement_signature": measurement_signature(catalog),
         "resume": resume,
