@@ -7,6 +7,8 @@ The first measurements cover a Mac mini with Apple M4 Pro and 64 GiB RAM. Interr
 ## Run Reports
 
 <!-- BENCHMARK-RUNS:START -->
+- [2026-10-21T191107.035609Z — mac16-11-64gib](runs/mac16-11-64gib/2026-10-21T191107.035609Z/report.md) · 41 completed model(s); run completed.
+- [2026-10-21T190819.116894Z — mac16-11-64gib](runs/mac16-11-64gib/2026-10-21T190819.116894Z/report.md) · 0 completed model(s); run interrupted.
 - [2026-10-20T233259.487506Z — mac16-11-64gib](runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) · 38 completed model(s); run completed.
 - [2026-10-20T205837.438946Z — mac16-11-64gib](runs/mac16-11-64gib/2026-10-20T205837.438946Z/report.md) · 17 completed model(s); run interrupted.
 - [2026-10-20T204744.300191Z — mac16-11-64gib](runs/mac16-11-64gib/2026-10-20T204744.300191Z/report.md) · 1 completed model(s); run completed.

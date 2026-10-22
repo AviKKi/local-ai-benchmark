@@ -1,0 +1,12 @@
+{"time": "2026-10-21T19:08:19.126316+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/manifests/270m-it-q8_0"}
+{"time": "2026-10-21T19:08:19.865612+00:00", "kind": "command", "message": "/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.venv/bin/python3 /Users/avikki/Documents/sideprojects/local-ai-benchmarks/src/local_bench/metadata_worker.py https://registry.ollama.ai/v2/library/gemma3/blobs/sha256:74156d92caf6d17ac05e9ad7b3eab0a2123f6bce4150f715ebd92e0c3af6cad1"}
+{"time": "2026-10-21T19:08:20.833619+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama serve --help"}
+{"time": "2026-10-21T19:08:20.856148+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama run --help"}
+{"time": "2026-10-21T19:08:20.870100+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama show --help"}
+{"time": "2026-10-21T19:08:21.001241+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama --version"}
+{"time": "2026-10-21T19:08:21.015399+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama list"}
+{"time": "2026-10-21T19:08:21.028733+00:00", "kind": "command", "message": "/opt/homebrew/bin/ollama pull gemma3:270m-it-q8_0"}
+{"time": "2026-10-21T19:08:24.438686+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 0%"}
+{"time": "2026-10-21T19:08:26.239626+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 10%"}
+{"time": "2026-10-21T19:08:28.637907+00:00", "kind": "download", "message": "gemma3:270m-it-q8_0 \u00b7 current layer 20%"}
+{"time": "2026-10-21T19:08:29.549035+00:00", "kind": "interrupted", "message": "User interrupt"}

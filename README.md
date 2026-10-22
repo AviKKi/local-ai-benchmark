@@ -84,10 +84,13 @@ Latest completed measurement for each model from saved runs.
 | deepseek-r1:14b-qwen-distill-q4_K_M | mac16-11-64gib | 26.39 | 26.17 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T205837.438946Z/report.md) |
 | qwen3:14b-q4_K_M | mac16-11-64gib | 26.16 | 25.98 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
 | phi4:14b-q4_K_M | mac16-11-64gib | 25.41 | 25.10 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
+| mistral-small3.2:24b | mac16-11-64gib | 17.01 | 16.83 | [report](benchmarks/runs/mac16-11-64gib/2026-10-21T191107.035609Z/report.md) |
 | devstral-small-2:24b-instruct-2512-q4_K_M | mac16-11-64gib | 16.62 | 16.47 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
 | qwen3.6:27b-q4_K_M | mac16-11-64gib | 13.89 | 13.78 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
 | granite4.2:30b-q4_K_M | mac16-11-64gib | 13.43 | 13.26 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
 | olmo-3.1:32b-instruct-q4_K_M | mac16-11-64gib | 12.39 | 12.26 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
+| olmo-3.1:32b-think-q4_K_M | mac16-11-64gib | 12.37 | 12.24 | [report](benchmarks/runs/mac16-11-64gib/2026-10-21T191107.035609Z/report.md) |
+| deepseek-r1:32b-qwen-distill-q4_K_M | mac16-11-64gib | 12.18 | 12.05 | [report](benchmarks/runs/mac16-11-64gib/2026-10-21T191107.035609Z/report.md) |
 | qwen3:32b | mac16-11-64gib | 11.93 | 11.79 | [report](benchmarks/runs/mac16-11-64gib/2026-10-20T233259.487506Z/report.md) |
 
 Decode throughput includes generated thinking tokens where reported. Requests run sequentially; probes and warmups are excluded. Output quality is not scored.

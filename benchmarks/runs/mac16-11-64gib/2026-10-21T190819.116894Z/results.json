@@ -1,0 +1,98 @@
+{
+  "run_id": "2026-10-21T190819.116894Z",
+  "device_id": "mac16-11-64gib",
+  "started_at": "2026-10-21T19:08:19.118004+00:00",
+  "status": "interrupted",
+  "plan_only": false,
+  "catalog_schema_version": "1.0.0",
+  "catalog_as_of": "2026-10-21",
+  "system_specs": {
+    "os": "Darwin",
+    "os_version": "26.5.1",
+    "architecture": "arm64",
+    "model": "Mac16,11",
+    "chip": "Apple M4 Pro",
+    "logical_cpu_count": 14,
+    "physical_cpu_count": 14,
+    "memory": {
+      "physical": 68719476736,
+      "available": 58536165376,
+      "pressure": "normal",
+      "swap_used": 0,
+      "metal_recommended": null
+    },
+    "page_size_bytes": 16384,
+    "metal_recommended_working_set_bytes": null,
+    "metal_working_set_note": "Not exposed by this telemetry provider; the optional catalog limit is not applied."
+  },
+  "ollama_version": "ollama version is 0.40.6",
+  "models": [
+    {
+      "model_id": "gemma3-270m-it-q8-0",
+      "ollama_tag": "gemma3:270m-it-q8_0",
+      "status": "interrupted",
+      "catalog_schema_version": "1.0.0",
+      "catalog_as_of": "2026-10-21",
+      "resolved_manifest_sha256": "e7d36fb2c3b3293cfe56d55889867a064b3a2b22e98335f2e6e8a387e081d6be",
+      "actual_quantization": null,
+      "actual_context_length": null,
+      "actual_backend": null,
+      "thinking_mode": "model_default (no CLI override; effective reasoning effort is not exposed by the CLI)",
+      "memory_budget_bytes": 2684354560,
+      "skip_or_failure_reason": "user_interrupt",
+      "probes": [],
+      "warmups": [],
+      "profiles": [],
+      "metrics": {
+        "peak_runner_and_server_memory_bytes": 24954368,
+        "peak_system_available_drop_bytes": 247414784,
+        "minimum_available_memory_bytes": 58284605440,
+        "system_memory_pressure": "normal",
+        "swap_growth_bytes": 0,
+        "peak_cpu_percent_one_core_is_100": 41.16873466107106,
+        "gpu_usage_percent": null,
+        "gpu_usage_missing_reason": "GPU utilization requires privileged/platform-specific telemetry; not collected",
+        "memory_method": "sum of owned processes' macOS physical footprints; guard also checks system available-memory drop without adding the two"
+      },
+      "download_payload_bytes": 291554930,
+      "ollama_version": "ollama version is 0.40.6"
+    }
+  ],
+  "benchmark_options": {
+    "num_ctx": 2048,
+    "num_predict": 256,
+    "num_batch": 128,
+    "temperature": 0,
+    "seed": 42
+  },
+  "measurement_signature": "01289664e65e6e31ed7b1958a0d618bba3ea59ddf9720f319b64eab207f49fa1",
+  "resume": false,
+  "download_workers": 1,
+  "download_strategy": "serial",
+  "prompts": [
+    {
+      "id": "coding",
+      "category": "coding",
+      "text": "Write Python merge sort with a short explanation and example."
+    },
+    {
+      "id": "sql",
+      "category": "sql",
+      "text": "SQL: orders(id,customer_id,total,created_at). Return each customer's top 3 orders by total, breaking ties by id. Explain the query."
+    },
+    {
+      "id": "ner",
+      "category": "ner",
+      "text": "Extract PERSON, ORG, LOCATION as JSON: Maya Chen joined Acme in London. Ravi Shah visited Paris for a meeting with Globex. Explain each entity."
+    }
+  ],
+  "notes": [
+    "No output quality evaluation; generation text is not retained.",
+    "Native model templates and default thinking behavior are retained.",
+    "One-token prompt probes run under the 2048-token context bound before measurement.",
+    "Prompt caches may remain warm between fresh-conversation CLI invocations."
+  ],
+  "updated_at": "2026-10-21T19:08:29.549159+00:00",
+  "error": "Interrupted; owned processes and artifacts were cleaned up unless a cleanup error is reported",
+  "finished_at": "2026-10-21T19:08:29.549154+00:00"
+}

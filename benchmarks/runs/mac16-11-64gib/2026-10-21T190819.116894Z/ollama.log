@@ -1,0 +1,15 @@
+time=2026-10-22T00:38:20.890+05:30 level=INFO source=routes.go:2439 msg="server config" env="map[HTTPS_PROXY: HTTP_PROXY: LLAMA_ARG_FIT: LLAMA_ARG_FIT_TARGET: NO_PROXY:127.0.0.1,localhost OLLAMA_CONTEXT_LENGTH:2048 OLLAMA_CREATE_REMOTE:false OLLAMA_DEBUG:INFO OLLAMA_DEBUG_LOG_REQUESTS:false OLLAMA_EDITOR: OLLAMA_FLASH_ATTENTION:false OLLAMA_GO_TEMPLATE:true OLLAMA_GPU_OVERHEAD:0 OLLAMA_HOST:http://127.0.0.1:11435 OLLAMA_IGPU_ENABLE: OLLAMA_KEEP_ALIVE:2m0s OLLAMA_KV_CACHE_TYPE:f16 OLLAMA_LLM_LIBRARY: OLLAMA_LOAD_TIMEOUT:5m0s OLLAMA_MAX_LOADED_MODELS:1 OLLAMA_MAX_QUEUE:1 OLLAMA_MAX_TRANSFER_STREAMS:4 OLLAMA_MODELS:/Users/avikki/Documents/sideprojects/local-ai-benchmarks/.benchmark-work/run-dhqde4hc/models OLLAMA_NOHISTORY:false OLLAMA_NOPRUNE:false OLLAMA_NO_CLOUD:true OLLAMA_NUM_PARALLEL:1 OLLAMA_ORIGINS:[http://localhost https://localhost http://localhost:* https://localhost:* http://127.0.0.1 https://127.0.0.1 http://127.0.0.1:* https://127.0.0.1:* http://0.0.0.0 https://0.0.0.0 http://0.0.0.0:* https://0.0.0.0:* app://* file://* tauri://* vscode-webview://* vscode-file://*] OLLAMA_REMOTES:[ollama.com] OLLAMA_SCHED_SPREAD:false http_proxy: https_proxy: no_proxy:]"
+time=2026-10-22T00:38:20.890+05:30 level=INFO source=routes.go:2441 msg="Ollama cloud disabled: true"
+time=2026-10-22T00:38:20.891+05:30 level=INFO source=images.go:1000 msg="total blobs: 0"
+time=2026-10-22T00:38:20.891+05:30 level=INFO source=images.go:1009 msg="total unused blobs removed: 0"
+time=2026-10-22T00:38:20.891+05:30 level=INFO source=routes.go:2501 msg="Listening on 127.0.0.1:11435 (version 0.40.6)"
+time=2026-10-22T00:38:20.891+05:30 level=INFO source=model_recommendations.go:177 msg="model recommendations cache sleep scheduled" wait=3h29m3.760244688s consecutive_failures=0
+time=2026-10-22T00:38:20.891+05:30 level=INFO source=runner.go:60 msg="discovering available GPUs..."
+time=2026-10-22T00:38:20.962+05:30 level=INFO source=types.go:32 msg="inference compute" id=0 filter_id=0 library=Metal compute=0.0 name=MTL0 description="Apple M4 Pro" libdirs=ollama driver=0.0 pci_id="" type=iGPU total="51.8 GiB" available="51.8 GiB"
+time=2026-10-22T00:38:20.962+05:30 level=INFO source=routes.go:2551 msg="vram-based default context" total_vram="51.8 GiB" default_num_ctx=262144
+[GIN] 2026/10/22 - 00:38:21 | 200 |      46.417µs |       127.0.0.1 | GET      "/api/version"
+[GIN] 2026/10/22 - 00:38:21 | 200 |       9.666µs |       127.0.0.1 | HEAD     "/"
+[GIN] 2026/10/22 - 00:38:21 | 200 |     230.166µs |       127.0.0.1 | GET      "/api/tags"
+[GIN] 2026/10/22 - 00:38:21 | 200 |         8.5µs |       127.0.0.1 | HEAD     "/"
+time=2026-10-22T00:38:23.577+05:30 level=INFO source=download.go:182 msg="downloading 735af2139dc6 in 3 100 MB part(s)"
+[GIN] 2026/10/22 - 00:38:29 | 200 |  8.492911583s |       127.0.0.1 | POST     "/api/pull"
